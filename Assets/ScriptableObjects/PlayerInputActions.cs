@@ -62,6 +62,15 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""OpenUI"",
+                    ""type"": ""Button"",
+                    ""id"": ""2f9ad9b9-bf32-48ff-b0a4-b6f17edd4f23"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -152,6 +161,17 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d5a74837-1d30-4004-82f0-deea09a3f9af"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""OpenUI"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -170,6 +190,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
         m_Player_Sprint = m_Player.FindAction("Sprint", throwIfNotFound: true);
         m_Player_Look = m_Player.FindAction("Look", throwIfNotFound: true);
+        m_Player_OpenUI = m_Player.FindAction("OpenUI", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -233,6 +254,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Jump;
     private readonly InputAction m_Player_Sprint;
     private readonly InputAction m_Player_Look;
+    private readonly InputAction m_Player_OpenUI;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -241,6 +263,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         public InputAction @Jump => m_Wrapper.m_Player_Jump;
         public InputAction @Sprint => m_Wrapper.m_Player_Sprint;
         public InputAction @Look => m_Wrapper.m_Player_Look;
+        public InputAction @OpenUI => m_Wrapper.m_Player_OpenUI;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -262,6 +285,9 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 @Look.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLook;
                 @Look.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLook;
                 @Look.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLook;
+                @OpenUI.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnOpenUI;
+                @OpenUI.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnOpenUI;
+                @OpenUI.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnOpenUI;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -278,6 +304,9 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 @Look.started += instance.OnLook;
                 @Look.performed += instance.OnLook;
                 @Look.canceled += instance.OnLook;
+                @OpenUI.started += instance.OnOpenUI;
+                @OpenUI.performed += instance.OnOpenUI;
+                @OpenUI.canceled += instance.OnOpenUI;
             }
         }
     }
@@ -297,5 +326,6 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         void OnJump(InputAction.CallbackContext context);
         void OnSprint(InputAction.CallbackContext context);
         void OnLook(InputAction.CallbackContext context);
+        void OnOpenUI(InputAction.CallbackContext context);
     }
 }

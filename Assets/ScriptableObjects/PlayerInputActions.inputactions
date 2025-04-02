@@ -40,6 +40,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "OpenUI",
+                    "type": "Button",
+                    "id": "2f9ad9b9-bf32-48ff-b0a4-b6f17edd4f23",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -130,6 +139,17 @@
                     "action": "Movement",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "d5a74837-1d30-4004-82f0-deea09a3f9af",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "OpenUI",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }
