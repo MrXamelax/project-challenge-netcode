@@ -395,7 +395,16 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
     private void Reload_performed(InputAction.CallbackContext context) {
         //Debug.Log("Reload!");
         //ReloadWeapon();
-        GetComponent<TeamManager>().AddPoints(10);
+        var rpcs = GetComponent<PlayerRpcs>();
+        if (!(rpcs.hasYellowZeal || rpcs.hasRedZeal)) {
+            Debug.Log("You currently dont have a zeal!");
+            return;
+        }
+        var isRed = rpcs.hasRedZeal;
+        var zealType = isRed ? Constants.ZEAL_RED_GAMEOBJECT_TAG : Constants.ZEAL_YELLOW_GAMEOBJECT_TAG;
+        var zeal = GameObject.FindGameObjectWithTag(zealType);
+        var zealObject = zeal.GetComponent<ZealObject>();
+        zealObject.DropZeal(isRed);
     }
 
     private void Movement_started(InputAction.CallbackContext context) {

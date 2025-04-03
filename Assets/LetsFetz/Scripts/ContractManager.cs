@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using DataStation = Contracts.DataStation;
 
 public class ContractManager : MonoBehaviour {
     
@@ -52,6 +51,7 @@ public class ContractManager : MonoBehaviour {
             _teamContracts[i] = new List<Contract>();
             _teamContracts[i].Add(new Contracts.DataStation());
             _teamContracts[i].Add(new Contracts.GasLeak());
+            _teamContracts[i].Add(new Contracts.Zeal());
         }
     }
     

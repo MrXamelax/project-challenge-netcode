@@ -4,52 +4,76 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class ZealObject : MonoBehaviour, IInteractable {
+    private int capturedByTeamID = -1;
+    
+    [SerializeField] private bool _isRed;
 
-    [SerializeField] private bool isRed;
-
+    private TeamManager teamManager;
+    
     private PlayerRpcs _rpcs;
 
     public void SetRpcs(PlayerRpcs rpcs) {
         _rpcs = rpcs;
     }
 
+    private void Start() {
+        teamManager = NetworkManager.Singleton.LocalClient.PlayerObject.gameObject.GetComponent<TeamManager>();
+    }
+
     public void Interact() {
         CollectZeal();
-        Debug.Log((isRed ? "Red " : "Yellow ") + "Zeal has been collected by Team");
+        Debug.Log((_isRed ? "Red " : "Yellow ") + "Zeal has been collected by Team");
     }
 
     private void CollectZeal() {
-        //TODO: Scheiße digga das is ja immer noch nich fertig ahhh
-        ZealState(false);
-        _rpcs.PickUpZealServerRpc(isRed);
+        ZealState(false, teamManager.GetLocalTeamID());
+        if (NetworkManager.Singleton.IsHost) StartCoroutine(ProgressTicking());
+        _rpcs.PickUpZealServerRpc(_isRed, teamManager.GetLocalTeamID());
         /*
          * + deactivate gameobject for everyone
          * + activate highlighted minimap and map icon on player for everyone
          * + deactivate unhighlighted minimap and map icon on zeal object for everyone
          * - start ticking zeal points for team
-         * - local client has to know, it has the zeal
+         * - host client has to know, which team has the zeal
          */
     }
     
-    private void DropZeal() {
-        ZealState(true);
+    public void DropZeal(bool isRed) {
+        transform.position = NetworkManager.Singleton.LocalClient.PlayerObject.transform.position;
+        ZealState(true, -1);
+        var pos = transform.position;
+        _rpcs.DropZealServerRpc(isRed, pos.x, pos.y, pos.z);
         /*
-         * called when you have the zeal and dps threshold is met
-         * - deactivate highlighted minimap and map on player for everyone
-         * - unhighlighted minimap and map icon on zeal object for everyone
+         * - called when you have the zeal and dps threshold is met
+         * + deactivate highlighted minimap and map on player for everyone
+         * + unhighlighted minimap and map icon on zeal object for everyone
          * - stop ticking zeal points for team
-         * - local client no longer has zeal
+         * - host client knows that team no longer has zeal
          */
     }
     
-    public void ZealState(bool active) {
+    public void ZealState(bool active, int teamID) {
+        capturedByTeamID = teamID;
+        
         var childObjects = GetComponentsInChildren<Transform>().ToList();
         childObjects.RemoveAt(0);
         foreach (var tf in childObjects) {
             tf.gameObject.SetActive(active);
         }
     }
-    
+
+    public IEnumerator ProgressTicking() {
+        while (true) {
+            yield return new WaitForSeconds(Constants.ZEAL_TIME_PER_TICK);
+            if (capturedByTeamID == -1) break;
+            var progress = _isRed ? Constants.ZEAL_RED_PROGRESS_PER_TICK : Constants.ZEAL_YELLOW_PROGRESS_PER_TICK;
+            Debug.Log($"Adding {progress} Zeal progress to team {capturedByTeamID}!");
+            teamManager.AddProgressOnServer(capturedByTeamID, new Contracts.Zeal(), progress);
+        }
+        Debug.Log("Zeal dropped");
+    }
+
 }

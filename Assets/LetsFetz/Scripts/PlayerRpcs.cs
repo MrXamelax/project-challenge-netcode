@@ -14,8 +14,8 @@ public class PlayerRpcs : NetworkBehaviour {
     [SerializeField] private GameObject containerZealIconYellow;
     [SerializeField] private GameObject containerZealIconRed;
 
-    private bool hasYellowZeal;
-    private bool hasRedZeal;
+    public bool hasYellowZeal;
+    public bool hasRedZeal;
 
     public override void OnNetworkSpawn() {
         containerZealIconYellow.transform.SetParent(null);
@@ -43,20 +43,53 @@ public class PlayerRpcs : NetworkBehaviour {
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void PickUpZealServerRpc(bool isRed, ServerRpcParams rpcParams = default) {
-        PickUpZealClientRpc(isRed, rpcParams.Receive.SenderClientId);
+    public void PickUpZealServerRpc(bool isRed, int teamID, ServerRpcParams rpcParams = default) {
+        PickUpZealClientRpc(isRed, rpcParams.Receive.SenderClientId, teamID);
     }
 
     [ClientRpc]
-    private void PickUpZealClientRpc(bool isRed, ulong clientID) {
-        if (NetworkManager.Singleton.LocalClientId == clientID) return;
+    private void PickUpZealClientRpc(bool isRed, ulong clientID, int teamID) {
+        if (NetworkManager.Singleton.LocalClientId == clientID) {
+            if (isRed) hasRedZeal = true;
+            else hasYellowZeal = true;
+            return;
+        }
         
         if (isRed) zealIconRed.SetActive(true);
         else zealIconYellow.SetActive(true);
         
         var zealType = isRed ? Constants.ZEAL_RED_GAMEOBJECT_TAG : Constants.ZEAL_YELLOW_GAMEOBJECT_TAG;
         var zeal = GameObject.FindGameObjectWithTag(zealType);
-        zeal.GetComponent<ZealObject>().ZealState(false);
+        var zealObject = zeal.GetComponent<ZealObject>();
+        zealObject.ZealState(false, teamID);
+
+        if (!IsHost) return;
+        // Start ticking zeal progress
+        StartCoroutine(zealObject.ProgressTicking());
+    }
+
+    [ServerRpc]
+    public void DropZealServerRpc(bool isRed, float xP, float yP, float zP, ServerRpcParams rpcParams = default) {
+        DropZealClientRpc(isRed, rpcParams.Receive.SenderClientId, xP, yP, zP);
+    }
+    
+    [ClientRpc]
+    private void DropZealClientRpc(bool isRed, ulong clientID, float xP, float yP, float zP) {
+        if (NetworkManager.Singleton.LocalClientId == clientID) {
+            if (isRed) hasRedZeal = false;
+            else hasYellowZeal = false;
+            return;
+        }
+        
+        var pos = new Vector3(xP, yP, zP);
+        
+        if (isRed) zealIconRed.SetActive(false);
+        else zealIconYellow.SetActive(false);
+        
+        var zealType = isRed ? Constants.ZEAL_RED_GAMEOBJECT_TAG : Constants.ZEAL_YELLOW_GAMEOBJECT_TAG;
+        var zeal = GameObject.FindGameObjectWithTag(zealType);
+        zeal.transform.position = pos;
+        zeal.GetComponent<ZealObject>().ZealState(true, -1);
     }
     
     

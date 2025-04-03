@@ -76,27 +76,47 @@ public class Constants {
     #region Zeal
     
     // Unique GameObject name to find the object in the scene
-    public const string ZEAL_YELLOW_GAMEOBJECT_TAG = "ZealYellow";
+    public const string ZEAL_YELLOW_GAMEOBJECT_TAG 
+        = "ZealYellow";
     
     // Unique GameObject name to find the object in the scene
-    public const string ZEAL_RED_GAMEOBJECT_TAG = "ZealRed";
+    public const string ZEAL_RED_GAMEOBJECT_TAG 
+        = "ZealRed";
     
     // Time in seconds needed in Match to pass before the yellow zeal is spawned by the host
-    public const int ZEAL_YELLOW_SPAWN_TIMESTAMP = 2;
+    public const int ZEAL_YELLOW_SPAWN_TIMESTAMP 
+        = 2;
     
     // Time in seconds needed in Match to pass before the red zeal is spawned by the host
-    public const int ZEAL_RED_SPAWN_TIMESTAMP = 3;
+    public const int ZEAL_RED_SPAWN_TIMESTAMP 
+        = 3;
+    
+    public const int ZEAL_TIME_PER_TICK 
+        = 3;
+
+    public const int ZEAL_YELLOW_PROGRESS_PER_TICK
+        = 10;
+
+    public const int ZEAL_RED_PROGRESS_PER_TICK
+        = 15;
+    
+    public static readonly int[] ZEAL_PROGRESS_PER_LEVEL
+        = { 50, 60, 60, 100 };
+    
+    public static readonly int[] ZEAL_POINTS_PER_LEVEL
+        = { 10, 20, 25, 30, 40 };
     
     #endregion
 
 
-public const int MAX_HEALTH 
+    public const int MAX_HEALTH 
         = 100;
     
     public static ReadOnlyDictionary<int, Contract> CONTRACT_MAP =
         new ReadOnlyDictionary<int, Contract>(new Dictionary<int, Contract> {
             {0, new Contracts.DataStation()},
-            {1, new Contracts.GasLeak()}
+            {1, new Contracts.GasLeak()},
+            {2, new Contracts.Zeal()}
         });
 
 }
