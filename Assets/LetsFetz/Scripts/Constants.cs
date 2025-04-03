@@ -76,10 +76,10 @@ public class Constants {
     #region Zeal
     
     // Unique GameObject name to find the object in the scene
-    public const string ZEAL_YELLOW_GAMEOBJECT_NAME = "ZealYellow";
+    public const string ZEAL_YELLOW_GAMEOBJECT_TAG = "ZealYellow";
     
     // Unique GameObject name to find the object in the scene
-    public const string ZEAL_RED_GAMEOBJECT_NAME = "ZealRed";
+    public const string ZEAL_RED_GAMEOBJECT_TAG = "ZealRed";
     
     // Time in seconds needed in Match to pass before the yellow zeal is spawned by the host
     public const int ZEAL_YELLOW_SPAWN_TIMESTAMP = 2;

@@ -54,9 +54,8 @@ public class PlayerRpcs : NetworkBehaviour {
         if (isRed) zealIconRed.SetActive(true);
         else zealIconYellow.SetActive(true);
         
-        var zealType = isRed ? Constants.ZEAL_RED_GAMEOBJECT_NAME : Constants.ZEAL_YELLOW_GAMEOBJECT_NAME;
-        var zeal = GameObject.Find(zealType);
-        zeal = GameObject.FindWithTag("");
+        var zealType = isRed ? Constants.ZEAL_RED_GAMEOBJECT_TAG : Constants.ZEAL_YELLOW_GAMEOBJECT_TAG;
+        var zeal = GameObject.FindGameObjectWithTag(zealType);
         zeal.GetComponent<ZealObject>().ZealState(false);
     }
     

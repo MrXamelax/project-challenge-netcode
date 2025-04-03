@@ -25,9 +25,9 @@ public class ZealObject : MonoBehaviour, IInteractable {
         ZealState(false);
         _rpcs.PickUpZealServerRpc(isRed);
         /*
-         * - deactivate gameobject for everyone
+         * + deactivate gameobject for everyone
          * + activate highlighted minimap and map icon on player for everyone
-         * - deactivate unhighlighted minimap and map icon on zeal object for everyone
+         * + deactivate unhighlighted minimap and map icon on zeal object for everyone
          * - start ticking zeal points for team
          * - local client has to know, it has the zeal
          */
@@ -37,10 +37,10 @@ public class ZealObject : MonoBehaviour, IInteractable {
         ZealState(true);
         /*
          * called when you have the zeal and dps threshold is met
-         * deactivate highlighted minimap and map on player for everyone
-         * unhighlighted minimap and map icon on zeal object for everyone
-         * stop ticking zeal points for team
-         * local client no longer has zeal
+         * - deactivate highlighted minimap and map on player for everyone
+         * - unhighlighted minimap and map icon on zeal object for everyone
+         * - stop ticking zeal points for team
+         * - local client no longer has zeal
          */
     }
     
