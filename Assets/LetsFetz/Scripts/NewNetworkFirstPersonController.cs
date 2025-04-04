@@ -400,11 +400,12 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
             Debug.Log("You currently dont have a zeal!");
             return;
         }
+        
         var isRed = rpcs.hasRedZeal;
         var zealType = isRed ? Constants.ZEAL_RED_GAMEOBJECT_TAG : Constants.ZEAL_YELLOW_GAMEOBJECT_TAG;
         var zeal = GameObject.FindGameObjectWithTag(zealType);
         var zealObject = zeal.GetComponent<ZealObject>();
-        zealObject.DropZeal(isRed);
+        zealObject.DropZeal();
     }
 
     private void Movement_started(InputAction.CallbackContext context) {

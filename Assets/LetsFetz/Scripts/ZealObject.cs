@@ -24,11 +24,10 @@ public class ZealObject : MonoBehaviour, IInteractable {
     }
 
     public void Interact() {
-        CollectZeal();
-        Debug.Log((_isRed ? "Red " : "Yellow ") + "Zeal has been collected by Team");
+        PickUpZeal();
     }
 
-    private void CollectZeal() {
+    private void PickUpZeal() {
         ZealState(false, teamManager.GetLocalTeamID());
         if (NetworkManager.Singleton.IsHost) StartCoroutine(ProgressTicking());
         _rpcs.PickUpZealServerRpc(_isRed, teamManager.GetLocalTeamID());
@@ -41,11 +40,11 @@ public class ZealObject : MonoBehaviour, IInteractable {
          */
     }
     
-    public void DropZeal(bool isRed) {
+    public void DropZeal() {
         transform.position = NetworkManager.Singleton.LocalClient.PlayerObject.transform.position;
         ZealState(true, -1);
         var pos = transform.position;
-        _rpcs.DropZealServerRpc(isRed, pos.x, pos.y, pos.z);
+        _rpcs.DropZealServerRpc(_isRed, pos.x, pos.y, pos.z);
         /*
          * - called when you have the zeal and dps threshold is met
          * + deactivate highlighted minimap and map on player for everyone
@@ -56,9 +55,10 @@ public class ZealObject : MonoBehaviour, IInteractable {
     }
     
     public void ZealState(bool active, int teamID) {
+        if (!active) Debug.Log((_isRed ? "Red " : "Yellow ") + $"Zeal has been collected by Team {teamID}");
         capturedByTeamID = teamID;
         
-        var childObjects = GetComponentsInChildren<Transform>().ToList();
+        var childObjects = GetComponentsInChildren<Transform>(true).ToList();
         childObjects.RemoveAt(0);
         foreach (var tf in childObjects) {
             tf.gameObject.SetActive(active);
