@@ -24,6 +24,10 @@ public class ZealObject : MonoBehaviour, IInteractable {
     }
 
     public void Interact() {
+        if (_rpcs.hasYellowZeal || _rpcs.hasRedZeal) {
+            SwapZeal();
+            return;
+        }
         PickUpZeal();
     }
 
@@ -53,7 +57,14 @@ public class ZealObject : MonoBehaviour, IInteractable {
          * - host client knows that team no longer has zeal
          */
     }
-    
+
+    private void SwapZeal() {
+        PickUpZeal();
+        var zealType = !_isRed ? Constants.ZEAL_RED_GAMEOBJECT_TAG : Constants.ZEAL_YELLOW_GAMEOBJECT_TAG;
+        var zeal = GameObject.FindGameObjectWithTag(zealType);
+        zeal.GetComponent<ZealObject>().DropZeal();
+    }
+
     public void ZealState(bool active, int teamID) {
         if (!active) Debug.Log((_isRed ? "Red " : "Yellow ") + $"Zeal has been collected by Team {teamID}");
         capturedByTeamID = teamID;
