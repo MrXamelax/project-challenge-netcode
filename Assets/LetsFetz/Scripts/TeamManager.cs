@@ -186,7 +186,13 @@ public class TeamManager : NetworkBehaviour {
         var contractType = Constants.CONTRACT_MAP[contract.GetContractID()].GetType();
         var contractProgress = ContractManager.Instance.GetContractOfType2(teamID, contractType);
         var points = contractProgress.AddProgress(progress);
+        GameUI.Instance.UpdateDisplayProgress();
+        GameUI.Instance.UpdateDisplayPoints();
         if (points > 0) AddPointsServerRpc(points, teamID-1);
+    }
+
+    private void UpdateProgressOnClient() {
+        
     }
     
     /*

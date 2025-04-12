@@ -9,10 +9,11 @@ public class GameUI : MonoBehaviour {
     public static GameUI Instance { get; private set; }
     
     [SerializeField] private GameObject _teamsPanel;
-    
     [SerializeField] private GameObject _scoreboard;
-
     [SerializeField] private GameObject _minimap;
+    [SerializeField] private GameObject _progressPanel;
+    [SerializeField] private TMP_Text[] _progressTexts;
+    [SerializeField] private TMP_Text[] _pointsTexts;
     
     [SerializeField] private TMP_Text _debugText;
     [SerializeField] private TMP_Text[] _teamTexts;
@@ -40,6 +41,36 @@ public class GameUI : MonoBehaviour {
         //_minimap.SetActive(false);
     }
 
+    private void InitializeDisplayProgress() {
+        var contracts = ContractManager.Instance.GetTeamContracts()[0];
+        //Debug.Log("Size: " + contracts.Count);
+        for (int i = 0; i < _pointsTexts.Length; i++) {
+            //Debug.Log("InitializeDisplayProgress() " + i);
+            //_progressTexts[i].text = contracts.ToArray()[i].GetPointsPerLevel()[0].ToString();
+            _pointsTexts[i].text = $"{contracts[i].GetPointsPerLevel()[0].ToString()}";
+            _progressTexts[i].text = $"0 / {contracts[i].GetProgressToNextLevel()}";
+            //Debug.Log(i + ": " + contracts[i].GetPointsPerLevel().Length);
+            //Debug.Log(i + ": " + contracts[i]);
+        }
+    }
+    
+    public void UpdateDisplayProgress() {
+        
+        // gets called when progress is added to any contract
+        // does this need be rpc'd when team progress thingy?
+        var contracts = ContractManager.Instance.GetTeamContracts()[teamManager.GetLocalTeamID()-1];
+        for (int i = 0; i < _progressTexts.Length; i++) {
+            _progressTexts[i].text = $"{contracts[i].GetProgressNeeded() - contracts[i].GetProgressToNextLevel()} / {contracts[i].GetProgressNeeded()}";
+        }
+    }
+
+    public void UpdateDisplayPoints() {
+        var contracts = ContractManager.Instance.GetTeamContracts()[teamManager.GetLocalTeamID()-1];
+        for (int i = 0; i < _pointsTexts.Length; i++) {
+            _pointsTexts[i].text = $"{contracts[i].GetPointsPerLevelCurrent()}";
+        }
+    }
+
     public void OnInitialize() {
         _playerInputActions.Player.ToggleScoreboard.started += ToggleScoreboard_started;
         _playerInputActions.Player.ToggleScoreboard.canceled += ToggleScoreboard_canceled;
@@ -47,6 +78,7 @@ public class GameUI : MonoBehaviour {
         EnableChildren(_scoreboard);
         _scoreboard.SetActive(false);
         _minimap.SetActive(true);
+        InitializeDisplayProgress();
     }
 
     private void ToggleTeamsStarted(InputAction.CallbackContext obj) {
@@ -55,12 +87,14 @@ public class GameUI : MonoBehaviour {
     
     private void ToggleScoreboard_started(InputAction.CallbackContext obj) {
         _minimap.SetActive(false);
+        _progressPanel.SetActive(false);
         _scoreboard.SetActive(true);
     }
     
     private void ToggleScoreboard_canceled(InputAction.CallbackContext obj) {
         _scoreboard.SetActive(false);
         _minimap.SetActive(true);
+        _progressPanel.SetActive(true);
     }
 
     // We don't want to allow picking a team while the match is already running

@@ -7,6 +7,10 @@ public abstract class Contract {
     protected int level = 0;
     protected int contractID;
     protected int progressToNextLevel;
+    
+    protected int progressNeeded;
+    protected int[] progressPerLevel;
+    
     protected int[] pointsPerLevel;
 
     private void LevelUp() {
@@ -21,8 +25,12 @@ public abstract class Contract {
             level += 1;
             return AwardPoints();
         }
-
+        
         return 0;
+    }
+    
+    public int GetProgressToNextLevel() {
+        return progressToNextLevel;
     }
 
     public int GetContractID() {
@@ -32,7 +40,13 @@ public abstract class Contract {
     public int[] GetPointsPerLevel() {
         return pointsPerLevel;
     }
+
+    public int GetPointsPerLevelCurrent() {
+        return pointsPerLevel[level];
+    }
     
     protected abstract int AwardPoints();
+
+    public abstract int GetProgressNeeded();
 
 }

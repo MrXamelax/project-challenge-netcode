@@ -27,6 +27,10 @@ public class ContractManager : MonoBehaviour {
         return _contractList;
     }
 
+    public List<Contract>[] GetTeamContracts() {
+        return _teamContracts;
+    }
+
     public Contract GetContractOfType2(int teamID, Type contractType) {
         foreach (var contract in _teamContracts[teamID-1]) {
             if (contract.GetType() == contractType) return contract;
@@ -46,6 +50,7 @@ public class ContractManager : MonoBehaviour {
     private void Initialize() {
         //_contractList = new List<Contract>();
         //_contractList.Add(new Contracts.DataStation());
+        //Debug.Log("I do things!");
         _teamContracts = new List<Contract>[5]; // Number of teams
         for (int i = 0; i < _teamContracts.Length; i++) {
             _teamContracts[i] = new List<Contract>();
