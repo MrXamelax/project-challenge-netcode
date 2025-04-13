@@ -189,10 +189,24 @@ public class TeamManager : NetworkBehaviour {
         GameUI.Instance.UpdateDisplayProgress();
         GameUI.Instance.UpdateDisplayPoints();
         if (points > 0) AddPointsServerRpc(points, teamID-1);
+        UpdateAllContractsProgress(teamID-1);
+    }
+    
+    private void UpdateAllContractsProgress(int teamID) {
+        foreach (var contract in ContractManager.Instance.GetTeamContracts()[teamID]) {
+            UpdateProgressClientRpc(teamID, contract.GetContractID(), contract.GetProgressToNextLevel(), contract.GetLevel());
+        }
     }
 
-    private void UpdateProgressOnClient() {
-        
+    [ClientRpc]
+    private void UpdateProgressClientRpc(int teamID, int contractID, int progressToNextLevel, int level) {
+        if (IsHost) return;
+        if (NetworkManager.Singleton.LocalClient.PlayerObject.gameObject.GetComponent<TeamManager>().GetLocalTeamID()-1 != teamID) return;
+        var contract = ContractManager.Instance.GetTeamContracts()[teamID][contractID];
+        contract.SetLevel(level);
+        contract.SetProgressToNextLevel(progressToNextLevel);
+        GameUI.Instance.UpdateDisplayProgress();
+        GameUI.Instance.UpdateDisplayPoints();
     }
     
     /*

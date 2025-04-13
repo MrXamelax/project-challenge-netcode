@@ -8,16 +8,10 @@ public abstract class Contract {
     protected int contractID;
     protected int progressToNextLevel;
     
-    protected int progressNeeded;
     protected int[] progressPerLevel;
     
     protected int[] pointsPerLevel;
-
-    private void LevelUp() {
-        level += 1;
-    }
     
-    // Returns true if we leveled up
     public int AddProgress(int progress) {
         progressToNextLevel -= progress;
 
@@ -44,6 +38,23 @@ public abstract class Contract {
     public int GetPointsPerLevelCurrent() {
         return pointsPerLevel[level];
     }
+    
+    public int GetLevel() {
+        return level;
+    }
+
+    #region Setters
+    // Only needed for synchronization, initiated by server
+    
+    public void SetProgressToNextLevel(int progressToNextLevel) {
+        this.progressToNextLevel = progressToNextLevel;
+    }
+
+    public void SetLevel(int level) {
+        this.level = level;
+    }
+    
+    #endregion
     
     protected abstract int AwardPoints();
 
