@@ -30,7 +30,7 @@ namespace Contracts {
             } else {
                 progressToNextLevel = level >= Constants.GASLEAK_PROGRESS_PER_LEVEL.Length-1
                     ? Constants.GASLEAK_PROGRESS_PER_LEVEL[^1] // Regex for last element
-                    : Constants.GASLEAK_PROGRESS_PER_LEVEL[level-1];
+                    : Constants.GASLEAK_PROGRESS_PER_LEVEL[level];
             }
             
             return Constants.GASLEAK_POINTS_PER_LEVEL[level];

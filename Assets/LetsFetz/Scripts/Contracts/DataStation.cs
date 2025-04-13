@@ -30,7 +30,7 @@ namespace Contracts {
             } else {
                 progressToNextLevel = level >= Constants.DATASTATION_PROGRESS_PER_LEVEL.Length-1
                     ? Constants.DATASTATION_PROGRESS_PER_LEVEL[^1] // Regex for last element
-                    : Constants.DATASTATION_PROGRESS_PER_LEVEL[level-1];
+                    : Constants.DATASTATION_PROGRESS_PER_LEVEL[level];
             }
 
             return Constants.DATASTATION_POINTS_PER_LEVEL[level];

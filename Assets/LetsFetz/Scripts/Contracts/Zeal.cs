@@ -30,7 +30,7 @@ namespace Contracts {
             } else {
                 progressToNextLevel = level >= Constants.ZEAL_PROGRESS_PER_LEVEL.Length-1
                     ? Constants.ZEAL_PROGRESS_PER_LEVEL[^1] // Regex for last element
-                    : Constants.ZEAL_PROGRESS_PER_LEVEL[level-1];
+                    : Constants.ZEAL_PROGRESS_PER_LEVEL[level];
             }
             
             return Constants.ZEAL_POINTS_PER_LEVEL[level];
