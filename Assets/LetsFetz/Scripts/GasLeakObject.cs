@@ -21,8 +21,6 @@ public class GasLeakObject : NetworkBehaviour, IInteractable {
 
     public void SetTeamManager(TeamManager teamManagerHere) {
         teamManager = teamManagerHere;
-        //cProgressTicking = StartCoroutine(ProgressTicking());
-        //StopCoroutine(cProgressTicking);
     }
 
     public void Interact() {
@@ -32,19 +30,10 @@ public class GasLeakObject : NetworkBehaviour, IInteractable {
             Debug.Log("Refiner is already under your control!");
             return;
         }
-
-        var steal = capturedByTeamID != teamManager.GetLocalTeamID() /*&& capturedByTeamID != -1*/;
-        Debug.Log($"Refiner is being {(steal ? "stolen" : "held by own team")}");
         
         if (!IsHost) {
-            //isRefining = true;
-            //goLeak.SetActive(false);
-            //goRefiner.SetActive(true);
-            //goMinimapIconFree.SetActive(false);
-            //goMinimapIconCaptured.SetActive(true);
-            //capturedByTeamID = teamManager.GetLocalTeamID();
-            Capture(teamManager.GetLocalTeamID(), steal);
-            steal = capturedByTeamID != teamManager.GetLocalTeamID();
+            Capture(teamManager.GetLocalTeamID());
+            var steal = capturedByTeamID != teamManager.GetLocalTeamID();
             if (!steal) StartCoroutine(ProgressLeveling());
         }
         
@@ -55,18 +44,12 @@ public class GasLeakObject : NetworkBehaviour, IInteractable {
     [ServerRpc(RequireOwnership = false)]
     private void InteractServerRpc(int teamID, ServerRpcParams rpcParams = default) {
         
-        // Sent from my team?
-        Debug.Log($"var steal = {teamID} != {teamManager.GetLocalTeamID()};");
-        var steal = teamID != teamManager.GetLocalTeamID();
-        
-        //if (capturedByTeamID == -1) steal = false;
-        
         if (!isRefining) {
             StartCoroutine(ProgressLeveling());
             StartCoroutine(ProgressTicking());
         }
         
-        Capture(teamID, steal);
+        Capture(teamID);
         
         InteractClientRpc(teamID, new ClientRpcParams { Send = new ClientRpcSendParams {TargetClientIds = ClientListExcept(rpcParams.Receive.SenderClientId)}});
     }
@@ -75,27 +58,14 @@ public class GasLeakObject : NetworkBehaviour, IInteractable {
     private void InteractClientRpc(int teamID, ClientRpcParams rpcParams = default) {
         if (IsHost) return;
         
-        var steal = teamID != teamManager.GetLocalTeamID();
-        
-        // Initially capturing the the gas leak is not stealing it
-        //if (capturedByTeamID == -1) steal = false;
-        
         if (!isRefining) StartCoroutine(ProgressLeveling());
-        Debug.Log($"InteractClientRpc({teamID}) + steal: {steal} and capturedByTeamID: {capturedByTeamID}");
-        Capture(teamID, steal);
-        //isRefining = true;
-        //goLeak.SetActive(false);
-        //goRefiner.SetActive(true);
-        //capturedByTeamID = teamID;
-        //if (!steal) StartCoroutine(ProgressLeveling());
+        Capture(teamID);
     }
 
-    private void Capture(int teamID, bool steal) {
-        
-        Debug.Log(steal ? $"Team {teamID} stole a refiner from team {capturedByTeamID}!" : $"Team {teamID} captured a refiner!");
+    private void Capture(int teamID) {
 
         // Initial capture
-        if (capturedByTeamID == -1 /*&& teamID == teamManager.GetLocalTeamID()*/) {
+        if (capturedByTeamID == -1) {
             if (teamID == teamManager.GetLocalTeamID()) {
                 Debug.Log("Initial capture by my team");
                 isRefining = true;
@@ -121,15 +91,6 @@ public class GasLeakObject : NetworkBehaviour, IInteractable {
             goMinimapIconFree.SetActive(true);
             goMinimapIconCaptured.SetActive(false);
         }
-        
-        /*
-        if (!steal) {
-            goMinimapIconFree.SetActive(false);
-            goMinimapIconCaptured.SetActive(true);
-        } else {
-            goMinimapIconFree.SetActive(true);
-            goMinimapIconCaptured.SetActive(false);
-        }*/
         
         capturedByTeamID = teamID;
         
