@@ -34,7 +34,7 @@ public class GasLeakObject : NetworkBehaviour, IInteractable {
         }
 
         var steal = capturedByTeamID != teamManager.GetLocalTeamID() /*&& capturedByTeamID != -1*/;
-        Debug.Log($"Refiner is being {(steal ? "stolen" : "captured")}");
+        Debug.Log($"Refiner is being {(steal ? "stolen" : "held by own team")}");
         
         if (!IsHost) {
             //isRefining = true;
@@ -44,6 +44,7 @@ public class GasLeakObject : NetworkBehaviour, IInteractable {
             //goMinimapIconCaptured.SetActive(true);
             //capturedByTeamID = teamManager.GetLocalTeamID();
             Capture(teamManager.GetLocalTeamID(), steal);
+            steal = capturedByTeamID != teamManager.GetLocalTeamID();
             if (!steal) StartCoroutine(ProgressLeveling());
         }
         
@@ -55,9 +56,10 @@ public class GasLeakObject : NetworkBehaviour, IInteractable {
     private void InteractServerRpc(int teamID, ServerRpcParams rpcParams = default) {
         
         // Sent from my team?
+        Debug.Log($"var steal = {teamID} != {teamManager.GetLocalTeamID()};");
         var steal = teamID != teamManager.GetLocalTeamID();
         
-        if (capturedByTeamID == -1) steal = false;
+        //if (capturedByTeamID == -1) steal = false;
         
         if (!isRefining) {
             StartCoroutine(ProgressLeveling());
@@ -76,9 +78,10 @@ public class GasLeakObject : NetworkBehaviour, IInteractable {
         var steal = teamID != teamManager.GetLocalTeamID();
         
         // Initially capturing the the gas leak is not stealing it
-        if (capturedByTeamID == -1) steal = false;
+        //if (capturedByTeamID == -1) steal = false;
         
         if (!isRefining) StartCoroutine(ProgressLeveling());
+        Debug.Log($"InteractClientRpc({teamID}) + steal: {steal} and capturedByTeamID: {capturedByTeamID}");
         Capture(teamID, steal);
         //isRefining = true;
         //goLeak.SetActive(false);
@@ -92,26 +95,41 @@ public class GasLeakObject : NetworkBehaviour, IInteractable {
         Debug.Log(steal ? $"Team {teamID} stole a refiner from team {capturedByTeamID}!" : $"Team {teamID} captured a refiner!");
 
         // Initial capture
-        if (capturedByTeamID == -1 && steal) {
-            Debug.Log("Initial capture by other team");
+        if (capturedByTeamID == -1 /*&& teamID == teamManager.GetLocalTeamID()*/) {
+            if (teamID == teamManager.GetLocalTeamID()) {
+                Debug.Log("Initial capture by my team");
+                isRefining = true;
+                goLeak.SetActive(false);
+                goRefiner.SetActive(true);
+                goMinimapIconFree.SetActive(false);
+                goMinimapIconCaptured.SetActive(true);
+
+                capturedByTeamID = teamID;
+                return;
+            } 
             isRefining = true;
             goLeak.SetActive(false);
             goRefiner.SetActive(true);
-            
             capturedByTeamID = teamID;
             return;
         }
-        
-        if (!steal) {
-            isRefining = true;
-            goLeak.SetActive(false);
-            goRefiner.SetActive(true);
+
+        if (teamID == teamManager.GetLocalTeamID()) {
             goMinimapIconFree.SetActive(false);
             goMinimapIconCaptured.SetActive(true);
         } else {
             goMinimapIconFree.SetActive(true);
             goMinimapIconCaptured.SetActive(false);
         }
+        
+        /*
+        if (!steal) {
+            goMinimapIconFree.SetActive(false);
+            goMinimapIconCaptured.SetActive(true);
+        } else {
+            goMinimapIconFree.SetActive(true);
+            goMinimapIconCaptured.SetActive(false);
+        }*/
         
         capturedByTeamID = teamID;
         
