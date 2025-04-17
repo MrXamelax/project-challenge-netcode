@@ -33,7 +33,7 @@ public class Constants {
 
     // Points awarded to team by completing the full progress of the corresponding level
     public static readonly int[] DATASTATION_POINTS_PER_LEVEL
-        = { 20, 20, 30, 50 };
+        = { 20, 25, 30, 50 };
 
     #endregion
 
