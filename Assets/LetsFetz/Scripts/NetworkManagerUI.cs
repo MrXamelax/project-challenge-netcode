@@ -14,7 +14,7 @@ public class NetworkManagerUI : MonoBehaviour {
     [SerializeField] private GameObject uiNetwork;
     [SerializeField] private Button startMatchBtn;
 
-    [SerializeField] private int maxNameLength = 20;
+    [SerializeField] private int maxNameLength = 16;
 
     private void Awake() {
         
@@ -39,7 +39,7 @@ public class NetworkManagerUI : MonoBehaviour {
         });
         
         // Limiting name length to maxNameLength
-        inputName.onEndEdit.AddListener((param) => {
+        inputName.onValueChanged.AddListener((param) => {
             if (inputName.text.Length > maxNameLength) inputName.text = inputName.text.Substring(0, maxNameLength);
         });
     }
