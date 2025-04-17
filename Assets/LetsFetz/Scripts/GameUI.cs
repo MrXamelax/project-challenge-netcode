@@ -122,7 +122,7 @@ public class GameUI : MonoBehaviour {
         
         for(var j = 0; j < _teamTexts.Length; j++) {
             for (var i = 0; i < teamManager.teams[j].Count; i++) {
-                _teamTexts[j].text += $"Player {teamManager.teams[j].ToArray()[i]}";
+                _teamTexts[j].text += MatchManager.Instance.playerNames[teamManager.teams[j].ToArray()[i]];
                 if (i < teamManager.teams[j].Count - 1) _teamTexts[j].text += "\n";
             }
         }
