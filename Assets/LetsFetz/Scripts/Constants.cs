@@ -109,8 +109,30 @@ public class Constants {
     #endregion
 
 
-    public const int MAX_HEALTH 
-        = 100;
+    #region Player
+    
+    public const int PLAYER_MAX_HEALTH
+        = 400;
+
+    public const float PLAYER_TIME_PER_TICK
+        = 0.2f;
+    
+    public const int PLAYER_HEALTH_PER_TICK
+        = 5;
+
+    public const int PLAYER_TIME_OUT_OF_COMBAT
+        = 4;
+
+    public const float PLAYER_SHOOT_INTERVAL
+        = 0.1f;
+    
+    public const int PLAYER_MAX_AMMO
+        = 23;
+
+    public const int PLAYER_RELOAD_TIME
+        = 2;
+    
+    #endregion
     
     public static ReadOnlyDictionary<int, Contract> CONTRACT_MAP =
         new ReadOnlyDictionary<int, Contract>(new Dictionary<int, Contract> {

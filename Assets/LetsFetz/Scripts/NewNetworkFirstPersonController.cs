@@ -94,15 +94,12 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
     }
 
     private void Start() {
-        _healthSystem = new HealthSystem(100);
-        healthBar.Setup(_healthSystem);
         _mainCamera = GameObject.FindWithTag("MainCamera");
     }
 
     public override void OnNetworkSpawn() {
 
         if (OwnerClientId == 0) {
-            Debug.Log("Hello, it is -indeed- I, the mighty host");
             // Seed generation voodoo magic
             long currentTimeTicks = DateTime.UtcNow.Ticks;
             uint seed = (uint)(currentTimeTicks ^ (currentTimeTicks >> 32));
@@ -111,6 +108,9 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
             zealSpawnPoints = GameObject.Find("ZealSpawnPoints").GetComponentsInChildren<Transform>().ToList();
             zealSpawnPoints.RemoveAt(0);
         }
+        
+        _healthSystem = new HealthSystem(Constants.PLAYER_MAX_HEALTH);
+        healthBar.Setup(_healthSystem);
         
         if (IsOwner) Initialize();
     }
@@ -155,11 +155,12 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
         //_playerInputActions.Player.Shoot.started += Shoot_started;
         //_playerInputActions.Player.Shoot.canceled += Shoot_canceled;
 
-        _playerInputActions.Player.Reload.performed += Reload_performed;
+        //_playerInputActions.Player.Reload.performed += Reload_performed;
 
         _playerInputActions.Player.OpenMenu.performed += OpenMenu_performed;
         
-        GameUI.Instance.OnInitialize();
+        //GameUI.Instance.OnInitialize(_healthSystem);
+        GameUI.Instance.OnInitialize(_healthSystem);
         FollowPlayer.Instance.OnInitialize(transform);
         ShootManager.Instance.OnInitialize(transform);
         //FollowPlayer.Instance.SetPlayerPos();
@@ -392,9 +393,7 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
         //Debug.Log("Stop Shooting!");
     }
 
-    private void Reload_performed(InputAction.CallbackContext context) {
-        //Debug.Log("Reload!");
-        //ReloadWeapon();
+    private void DropZeal() {
         var rpcs = GetComponent<PlayerRpcs>();
         if (!(rpcs.hasYellowZeal || rpcs.hasRedZeal)) {
             Debug.Log("You currently dont have a zeal!");
@@ -406,6 +405,11 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
         var zeal = GameObject.FindGameObjectWithTag(zealType);
         var zealObject = zeal.GetComponent<ZealObject>();
         zealObject.DropZeal();
+    }
+
+    private void Reload_performed(InputAction.CallbackContext context) {
+        //ReloadWeapon();
+        
     }
 
     private void Movement_started(InputAction.CallbackContext context) {
@@ -542,7 +546,7 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
         
         // Damage Logic
         if (!IsHost) {
-            _healthSystem.Damage(10);
+            _healthSystem.Damage(9);
             Debug.Log($"Health: {_healthSystem.GetHealth()}");
         }
         DamageServerRpc();
@@ -551,7 +555,7 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
 
     [ServerRpc(RequireOwnership = false)]
     private void DamageServerRpc(ServerRpcParams rpcParams = default) {
-        _healthSystem.Damage(10);
+        _healthSystem.Damage(9);
         Debug.Log($"Health: {_healthSystem.GetHealth()}");
         DamageClientRpc(new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = ClientListExcept(rpcParams.Receive.SenderClientId)}});
     }
@@ -559,7 +563,7 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
     [ClientRpc]
     private void DamageClientRpc(ClientRpcParams rpcParams = default) {
         if (IsHost) return;
-        _healthSystem.Damage(10);
+        _healthSystem.Damage(9);
         Debug.Log($"Health: {_healthSystem.GetHealth()}");
     }
     
