@@ -114,7 +114,7 @@ public class Constants {
     public const int PLAYER_MAX_HEALTH
         = 400;
 
-    public const float PLAYER_TIME_PER_TICK
+    public const float PLAYER_TIME_PER_HEALTH_TICK
         = 0.2f;
     
     public const int PLAYER_HEALTH_PER_TICK

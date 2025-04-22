@@ -85,6 +85,10 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
     private int _secondsRemaining;
     private int _secondsPassed = 0;
 
+    private bool _inCombat;
+
+    private Coroutine _cOutOfCombatTimer;
+
     private GameObject _mainCamera;
     // End of Random Property Section
     
@@ -126,6 +130,8 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
         
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        _inCombat = false;
         
         timer = GameObject.FindWithTag("Timer");
         timerTxt = timer.GetComponent<TMP_Text>();
@@ -546,8 +552,10 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
         
         // Damage Logic
         if (!IsHost) {
-            _healthSystem.Damage(9);
-            Debug.Log($"Health: {_healthSystem.GetHealth()}");
+            _inCombat = true;
+            if (_cOutOfCombatTimer != null) StopCoroutine(_cOutOfCombatTimer);
+            _cOutOfCombatTimer = StartCoroutine(OutOfCombatTimer());
+            _healthSystem.Damage(Constants.PLAYER_DAMAGE_PER_SHOT);
         }
         DamageServerRpc();
         
@@ -555,16 +563,54 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
 
     [ServerRpc(RequireOwnership = false)]
     private void DamageServerRpc(ServerRpcParams rpcParams = default) {
-        _healthSystem.Damage(9);
-        Debug.Log($"Health: {_healthSystem.GetHealth()}");
+        _inCombat = true;
+        if (_cOutOfCombatTimer != null) StopCoroutine(_cOutOfCombatTimer);
+        _cOutOfCombatTimer = StartCoroutine(OutOfCombatTimer());
+        _healthSystem.Damage(Constants.PLAYER_DAMAGE_PER_SHOT);
         DamageClientRpc(new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = ClientListExcept(rpcParams.Receive.SenderClientId)}});
     }
     
     [ClientRpc]
     private void DamageClientRpc(ClientRpcParams rpcParams = default) {
         if (IsHost) return;
-        _healthSystem.Damage(9);
-        Debug.Log($"Health: {_healthSystem.GetHealth()}");
+        _inCombat = true;
+        if (_cOutOfCombatTimer != null) StopCoroutine(_cOutOfCombatTimer);
+        _cOutOfCombatTimer = StartCoroutine(OutOfCombatTimer());
+        _healthSystem.Damage(Constants.PLAYER_DAMAGE_PER_SHOT);
+    }
+
+    private void HealPlayer() {
+        if (!IsHost) {
+            _healthSystem.Heal(Constants.PLAYER_HEALTH_PER_TICK);
+        }
+        HealPlayerServerRpc();
+    }
+    
+    [ServerRpc(RequireOwnership = false)]
+    private void HealPlayerServerRpc(ServerRpcParams rpcParams = default) {
+        _healthSystem.Heal(Constants.PLAYER_HEALTH_PER_TICK);
+        HealPlayerClientRpc(new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = ClientListExcept(rpcParams.Receive.SenderClientId)}});
+    }
+    
+    [ClientRpc]
+    private void HealPlayerClientRpc(ClientRpcParams rpcParams = default) {
+        if (IsHost) return;
+        _healthSystem.Heal(Constants.PLAYER_HEALTH_PER_TICK);
+    }
+
+    IEnumerator OutOfCombatTimer() {
+        yield return new WaitForSeconds(Constants.PLAYER_TIME_OUT_OF_COMBAT);
+        _inCombat = false;
+        StartCoroutine(RegenerateHealth());
+    }
+
+    IEnumerator RegenerateHealth() {
+        Debug.Log("Starting Regen");
+        while (!_inCombat && _healthSystem.GetHealth() < Constants.PLAYER_MAX_HEALTH) {
+            HealPlayer();
+            yield return new WaitForSeconds(Constants.PLAYER_TIME_PER_HEALTH_TICK);
+        }
+        Debug.Log("Stopping Regen");
     }
     
     #endregion
