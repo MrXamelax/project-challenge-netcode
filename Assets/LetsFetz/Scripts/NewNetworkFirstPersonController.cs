@@ -391,8 +391,8 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
 
     private void Shoot_started(InputAction.CallbackContext context) {
         //Debug.Log("Shoot!");
-        if (!MatchManager.Instance.IsMatchRunning()) return;
-        ShootBullet();
+        //if (!MatchManager.Instance.IsMatchRunning()) return;
+        //ShootBullet();
     }
 
     private void Shoot_canceled(InputAction.CallbackContext context) {
@@ -465,6 +465,8 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
         return Mathf.Clamp(lfAngle, lfMin, lfMax);
     }
 
+    #region trash
+    /*
     private void ShootBullet() {
         var rot = _mainCamera.transform.rotation;
         var pos = _mainCamera.transform.position;
@@ -501,8 +503,8 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
     private void ReloadWeapon() {
         Transform spawnedWeapon = Instantiate(weapon, weaponSpawn);
         ReloadWeaponServerRpc();
-    }
-    
+    }*/
+    /*
     [ServerRpc]
     private void ReloadWeaponServerRpc(ServerRpcParams rpcParams = default) {
         //TODO: just spawn Weapon locally on every client, is nothing more than cosmetic
@@ -514,7 +516,7 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
                     - Server tells clients to locally equip weapon to enemy that send the RPC
                   - Client knows what shooting pattern, ammo, animation, whatever... to use
          */
-        
+        /*
         ReloadWeaponClientRpc(new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = ClientListExcept(rpcParams.Receive.SenderClientId)}});
         Transform spawnedWeapon = Instantiate(weapon, weaponSpawn);
         
@@ -527,7 +529,9 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
     private void ReloadWeaponClientRpc(ClientRpcParams rpcParams) {
         Transform spawnedWeapon = Instantiate(weapon, weaponSpawn);
     }
-
+    */
+    #endregion
+        
     [ServerRpc]
     private void DieServerRpc() {
         GetComponent<NetworkObject>().Despawn();
