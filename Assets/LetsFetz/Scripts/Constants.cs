@@ -125,6 +125,9 @@ public class Constants {
 
     public const float PLAYER_SHOOT_INTERVAL
         = 0.1f;
+
+    public const int PLAYER_DAMAGE_PER_SHOT
+        = 9;
     
     public const int PLAYER_MAX_AMMO
         = 23;
