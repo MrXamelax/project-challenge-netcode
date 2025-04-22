@@ -66,6 +66,7 @@ public class ShootManager : MonoBehaviour {
 
     private void Reload_started(InputAction.CallbackContext obj) {
         if (!MatchManager.Instance.IsMatchRunning()) return;
+        if (isReloading) return;
         isReloading = true;
         if (_shootingCoroutine != null) StopCoroutine(_shootingCoroutine);
         StartCoroutine(ReloadAnimationUI());

@@ -129,8 +129,8 @@ public class Constants {
     public const int PLAYER_MAX_AMMO
         = 23;
 
-    public const int PLAYER_RELOAD_TIME
-        = 2;
+    public const float PLAYER_RELOAD_TIME
+        = 1;
     
     #endregion
     
