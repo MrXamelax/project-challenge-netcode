@@ -61,12 +61,13 @@ public class ShootManager : MonoBehaviour {
     }
     
     private void StopShooting() {
-        StopCoroutine(_shootingCoroutine);
+        if (_shootingCoroutine != null) StopCoroutine(_shootingCoroutine);
     }
 
     private void Reload_started(InputAction.CallbackContext obj) {
+        if (!MatchManager.Instance.IsMatchRunning()) return;
         isReloading = true;
-        StopCoroutine(_shootingCoroutine);
+        if (_shootingCoroutine != null) StopCoroutine(_shootingCoroutine);
         StartCoroutine(ReloadAnimationUI());
     }
 
