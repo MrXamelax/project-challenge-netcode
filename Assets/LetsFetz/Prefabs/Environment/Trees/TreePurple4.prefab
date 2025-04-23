@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5039297943635896477}
+  - component: {fileID: 2233877738951182608}
   m_Layer: 0
   m_Name: TreePurple4
   m_TagString: Untagged
@@ -32,6 +33,33 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!205 &2233877738951182608
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6838902800935114590}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: 0, y: 0, z: 0}
+  m_Size: 1
+  m_FadeMode: 0
+  m_AnimateCrossFading: 0
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.6
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 3922037832564554070}
+  - screenRelativeHeight: 0.3
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 3922037832564554070}
+  - screenRelativeHeight: 0
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 3922037832564554070}
+  m_Enabled: 1
 --- !u!1001 &2426442947190171090
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -100,5 +128,10 @@ PrefabInstance:
 --- !u!4 &2749109456875340345 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 75583f1e7fa556643a1d417c04f5a107, type: 3}
+  m_PrefabInstance: {fileID: 2426442947190171090}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &3922037832564554070 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: 75583f1e7fa556643a1d417c04f5a107, type: 3}
   m_PrefabInstance: {fileID: 2426442947190171090}
   m_PrefabAsset: {fileID: 0}
