@@ -273,12 +273,16 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
         StartMatchClientRpc();
         timer.SetActive(true);
         StartCoroutine(TimerCountdown());
+        
+        //TODO: Players need to spawn with their whole team at a spawn point
+        transform.position = new Vector3(58,35,45);
         return true;
     }
 
     [ClientRpc]
     private void StartMatchClientRpc() {
         if (IsHost) return;
+        Debug.Log(GetComponent<TeamManager>().GetLocalTeamID());
         MatchManager.Instance.StartMatch();
         timer = GameObject.FindWithTag("Timer");
         timerTxt = timer.GetComponent<TMP_Text>();

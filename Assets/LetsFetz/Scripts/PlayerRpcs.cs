@@ -25,6 +25,8 @@ public class PlayerRpcs : NetworkBehaviour {
         containerZealIconRed.transform.rotation = Quaternion.identity;
     }
 
+    #region Shooting
+    
     [ServerRpc]
     public void StartShootingServerRpc(float xP, float yP, float zP, float xR, float yR, float zR, float wR, ServerRpcParams rpcParams = default) {
         StartShootingClientRpc(xP, yP, zP, xR, yR, zR, wR, rpcParams.Receive.SenderClientId);
@@ -41,7 +43,11 @@ public class PlayerRpcs : NetworkBehaviour {
         bullet.GetComponent<Bullet>().bulletClientID = clientID;
         
     }
+    
+    #endregion
 
+    #region Zeal
+    
     [ServerRpc(RequireOwnership = false)]
     public void PickUpZealServerRpc(bool isRed, int teamID, ServerRpcParams rpcParams = default) {
         PickUpZealClientRpc(isRed, rpcParams.Receive.SenderClientId, teamID);
@@ -92,5 +98,20 @@ public class PlayerRpcs : NetworkBehaviour {
         zeal.GetComponent<ZealObject>().ZealState(true, -1);
     }
     
+    #endregion
+
+    #region Datastation
+
+    [ServerRpc]
+    public void CaptureDataStationServerRpc(string teamID) {
+        CaptureDataStationClientRpc(teamID);
+    }
+    
+    [ClientRpc] 
+    private void CaptureDataStationClientRpc(string teamID) {
+        GameUI.Instance.UpdateDisplayDatastation(teamID);
+    }
+
+    #endregion
     
 }

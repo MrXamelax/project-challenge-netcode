@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1643858795778346698}
   - component: {fileID: 7022922654323345490}
+  - component: {fileID: 3563860895603091575}
+  - component: {fileID: 7971415476089120207}
   m_Layer: 0
   m_Name: TreeGreen1
   m_TagString: Untagged
@@ -60,6 +62,33 @@ LODGroup:
     renderers:
     - renderer: {fileID: 9175964076052511745}
   m_Enabled: 1
+--- !u!65 &3563860895603091575
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4877419389406034090}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 0
+  serializedVersion: 2
+  m_Size: {x: 0.38506317, y: 2.0864215, z: 0.3472805}
+  m_Center: {x: -0.20804596, y: 0.74642444, z: 0.24082184}
+--- !u!136 &7971415476089120207
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4877419389406034090}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.26319647
+  m_Height: 2.1805353
+  m_Direction: 1
+  m_Center: {x: -0.19776058, y: 0.7573397, z: 0.21252489}
 --- !u!1001 &7536218809644376197
 PrefabInstance:
   m_ObjectHideFlags: 0

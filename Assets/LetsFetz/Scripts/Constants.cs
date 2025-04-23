@@ -85,11 +85,11 @@ public class Constants {
     
     // Time in seconds needed in Match to pass before the yellow zeal is spawned by the host
     public const int ZEAL_YELLOW_SPAWN_TIMESTAMP 
-        = 2;
+        = 40;
     
     // Time in seconds needed in Match to pass before the red zeal is spawned by the host
     public const int ZEAL_RED_SPAWN_TIMESTAMP 
-        = 3;
+        = 90;
     
     public const int ZEAL_TIME_PER_TICK 
         = 3;

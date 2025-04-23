@@ -44,6 +44,18 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b46c67b4d4ef3864894b1ab9bc6022ee, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b46c67b4d4ef3864894b1ab9bc6022ee, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b46c67b4d4ef3864894b1ab9bc6022ee, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b46c67b4d4ef3864894b1ab9bc6022ee, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -83,9 +95,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b46c67b4d4ef3864894b1ab9bc6022ee, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: b46c67b4d4ef3864894b1ab9bc6022ee, type: 3}
       propertyPath: m_Name
       value: StoneBig6
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: b46c67b4d4ef3864894b1ab9bc6022ee, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b46c67b4d4ef3864894b1ab9bc6022ee, type: 3}
@@ -94,3 +114,22 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: b46c67b4d4ef3864894b1ab9bc6022ee, type: 3}
   m_PrefabInstance: {fileID: 5935007848254704585}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &6817336994820896408 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: b46c67b4d4ef3864894b1ab9bc6022ee, type: 3}
+  m_PrefabInstance: {fileID: 5935007848254704585}
+  m_PrefabAsset: {fileID: 0}
+--- !u!64 &2356284323532969431
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6817336994820896408}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -8209306888997327420, guid: b46c67b4d4ef3864894b1ab9bc6022ee, type: 3}

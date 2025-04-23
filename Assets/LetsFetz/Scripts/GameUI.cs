@@ -26,6 +26,8 @@ public class GameUI : MonoBehaviour {
     [SerializeField] private TMP_Text ammoCountText;
     
     [SerializeField] private Transform reloadBarFill;
+
+    [SerializeField] private TMP_Text datastationText;
     
     private NewPlayerInputActions _playerInputActions;
 
@@ -48,6 +50,10 @@ public class GameUI : MonoBehaviour {
 
     private void Start() {
         //_minimap.SetActive(false);
+    }
+    
+    public void UpdateDisplayDatastation(string teamID) {
+        datastationText.text = $"Squad {teamID}";
     }
 
     private void InitializeDisplayProgress() {

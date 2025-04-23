@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2227642996909141322}
   - component: {fileID: 1744981132973813914}
+  - component: {fileID: 8967682400238864552}
+  - component: {fileID: 5923386826453017426}
   m_Layer: 0
   m_Name: TreePurple3
   m_TagString: Untagged
@@ -60,6 +62,33 @@ LODGroup:
     renderers:
     - renderer: {fileID: 1236187855820554718}
   m_Enabled: 1
+--- !u!65 &8967682400238864552
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8354199516605832720}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 0
+  serializedVersion: 2
+  m_Size: {x: 1.1966572, y: 4.8821087, z: 1.3150816}
+  m_Center: {x: -0.059535027, y: 2.4418426, z: 0.014886379}
+--- !u!136 &5923386826453017426
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8354199516605832720}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.6300483
+  m_Height: 5.384491
+  m_Direction: 1
+  m_Center: {x: -0.06788921, y: 2.393578, z: 0.022923946}
 --- !u!1001 &497163904845389146
 PrefabInstance:
   m_ObjectHideFlags: 0

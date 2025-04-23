@@ -15,6 +15,8 @@ public class DataStationObject : MonoBehaviour {
     
     private Coroutine cCaptureDataStation;
 
+    private PlayerRpcs _rpcs;
+
     private void Awake() {
         cCaptureDataStation = StartCoroutine(CaptureDataStation(0));
         StopCoroutine(cCaptureDataStation);
@@ -23,6 +25,7 @@ public class DataStationObject : MonoBehaviour {
 
     public void SetTeamManager(TeamManager teamManagerHere) {
         teamManager = teamManagerHere;
+        _rpcs = teamManagerHere.GetComponent<PlayerRpcs>();
     }
 
     private void OnTriggerEnter(Collider other) {
@@ -81,6 +84,7 @@ public class DataStationObject : MonoBehaviour {
         yield return new WaitForSeconds(Constants.DATASTATION_CAPTURE_TIME);
         Debug.Log($"Team {teamID} captured!");
         capturedByTeamID = teamID;
+        _rpcs.CaptureDataStationServerRpc(capturedByTeamID.ToString());
         captured = true;
         StartCoroutine(ProgressTicking());
     }
