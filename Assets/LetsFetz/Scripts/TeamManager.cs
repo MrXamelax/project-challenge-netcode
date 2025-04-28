@@ -1,12 +1,16 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using Contracts;
 using Unity.Netcode;
 using UnityEngine;
+using Random = Unity.Mathematics.Random;
 
 public class TeamManager : NetworkBehaviour {
 
     // First row teamID, second row playerID
     public List<ulong>[] teams = new List<ulong>[5];
+    private List<Transform> teamSpawns;
 
     private int localTeamID;
     
@@ -32,10 +36,58 @@ public class TeamManager : NetworkBehaviour {
         foreach (var gasleak in GameObject.FindGameObjectsWithTag(Constants.GASLEAK_GAMEOBJECT_TAG)) {
             gasleak.GetComponent<GasLeakObject>().SetTeamManager(this);
         }
+        
+        // Referencing spawn points for teams in scene
+        if (IsHost && IsOwner) {
+            teamSpawns = GameObject.Find("TeamSpawns").GetComponentsInChildren<Transform>().ToList();
+            teamSpawns.RemoveAt(0);
+        }
     }
 
     private void Awake() {
         localTeamID = 0;
+    }
+
+    public void OnMatchStarted() {
+        // Seed generation voodoo magic
+        var currentTimeTicks = DateTime.UtcNow.Ticks;
+        var seed = (uint)(currentTimeTicks ^ (currentTimeTicks >> 32));
+        var rng = new Random(seed);
+        
+        // Pseudo matrix for local spawn point distribution
+        Vector2[] localSpawns = {new (1, 1), new (-1, 1), new (1, -1), new (-1, -1)};
+
+        // Team spawn distribution
+        var iterator = teamSpawns.Count; // Caching loop variable since original value is getting changed
+        for (var i = 0; i < iterator; i++) {
+            
+            // Randomizing team spawn
+            var teamSpawn = teamSpawns[rng.NextInt(0, teamSpawns.Count)];
+            
+            // Local spawn distribution, not randomized, based on team join order
+            for (var j = 0; j < teams[i].Count; j++) {
+                
+                // Local spawn is a square of 7x7, players spawn in corners
+                var localSpawnPoint = Vector2.Scale(new Vector2(3.5f, 3.5f), localSpawns[j]);
+                var spawnPoint = localSpawnPoint + new Vector2(teamSpawn.position.x, teamSpawn.position.z);
+                
+                // ClientID is cached in teams list array
+                var clientID = teams[i][j];
+                
+                // Sending spawn point to player
+                TeleportClientRpc(spawnPoint.x, teamSpawn.position.y, spawnPoint.y, new ClientRpcParams 
+                    { Send = new ClientRpcSendParams { TargetClientIds = new List<ulong>{clientID}}});
+            }
+            
+            // Removing team spawn so it is not used again
+            teamSpawns.Remove(teamSpawn);
+        }
+    }
+    
+    // Teleport local player to given coordinates
+    [ClientRpc]
+    private void TeleportClientRpc(float x, float y, float z, ClientRpcParams rpcParams = default) {
+        NetworkManager.Singleton.LocalClient.PlayerObject.transform.position = new Vector3(x, y, z);
     }
 
     #region SetTeamID

@@ -268,6 +268,7 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
             Debug.Log("Not every player selected a team!");
             return false;
         }
+        GetComponent<TeamManager>().OnMatchStarted();
         
         MatchManager.Instance.StartMatch();
         StartMatchClientRpc();
@@ -275,7 +276,7 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
         StartCoroutine(TimerCountdown());
         
         //TODO: Players need to spawn with their whole team at a spawn point
-        transform.position = new Vector3(58,35,45);
+        //transform.position = new Vector3(58,35,45);
         return true;
     }
 
