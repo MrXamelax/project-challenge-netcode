@@ -8,6 +8,8 @@ using Random = Unity.Mathematics.Random;
 
 public class TeamManager : NetworkBehaviour {
 
+    [SerializeField] private GameObject minimapIconPlayer;
+
     // First row teamID, second row playerID
     public List<ulong>[] teams = new List<ulong>[5];
     private List<Transform> teamSpawns;
@@ -138,14 +140,18 @@ public class TeamManager : NetworkBehaviour {
         
         teamManager.UpdateTeams(teamID, OwnerClientId);
         
-        SetTeamIDClientRpc(teamID, rpcParams.Receive.SenderClientId, swap, new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = ClientListExcept(rpcParams.Receive.SenderClientId)}});
+        if (teamID == teamManager.GetLocalTeamID()) minimapIconPlayer.SetActive(true);
+        else minimapIconPlayer.SetActive(false);
+        
+        SetTeamIDClientRpc(teamID, rpcParams.Receive.SenderClientId, swap, rpcParams.Receive.SenderClientId, new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = ClientListExcept(rpcParams.Receive.SenderClientId)}});
+        teamManager.DistributeTeamUpdateServerRpc(teamID, rpcParams.Receive.SenderClientId);
         
         GameUI.Instance.UpdateDisplayTeams();
         ScoreboardManager.Instance.UpdateDisplayScoreboard();
     }
     
     [ClientRpc]
-    private void SetTeamIDClientRpc(int teamID, ulong player, bool swap, ClientRpcParams rpcParams = default) {
+    private void SetTeamIDClientRpc(int teamID, ulong player, bool swap, ulong originalSender, ClientRpcParams rpcParams = default) {
         if (IsHost) return;
         
         var teamManager = NetworkManager.Singleton.LocalClient.PlayerObject.gameObject.GetComponent<TeamManager>();
@@ -155,8 +161,26 @@ public class TeamManager : NetworkBehaviour {
         localTeamID = teamID;
         
         teamManager.UpdateTeams(teamID, player);
+        
+        if (teamID == NetworkManager.Singleton.LocalClient.PlayerObject.gameObject.GetComponent<TeamManager>().GetLocalTeamID()) minimapIconPlayer.SetActive(true);
+        else minimapIconPlayer.SetActive(false);
+        
+        teamManager.DistributeTeamUpdateServerRpc(teamID, originalSender);
+        
         GameUI.Instance.UpdateDisplayTeams();
         ScoreboardManager.Instance.UpdateDisplayScoreboard();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void DistributeTeamUpdateServerRpc(int teamID, ulong originalSender) {
+        DistributeTeamUpdateClientRpc(teamID, new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = new List<ulong>{originalSender}}});
+    }
+
+    [ClientRpc]
+    private void DistributeTeamUpdateClientRpc(int teamID, ClientRpcParams rpcParams = default) {
+        if (teamID == localTeamID) minimapIconPlayer.SetActive(true);
+        else minimapIconPlayer.SetActive(false);
+        
     }
 
     private void UpdateTeams(int teamID, ulong playerID) {

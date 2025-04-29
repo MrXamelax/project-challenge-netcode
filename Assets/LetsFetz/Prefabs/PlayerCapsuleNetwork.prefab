@@ -1479,6 +1479,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f8c2bae0dffec643a8e043d5dbb98cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  minimapIconPlayer: {fileID: 4700274855564087621}
 --- !u!114 &3591640267535245841
 MonoBehaviour:
   m_ObjectHideFlags: 0
