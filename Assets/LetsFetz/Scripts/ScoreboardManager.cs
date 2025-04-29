@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -63,8 +64,39 @@ public class ScoreboardManager : MonoBehaviour {
     // Update points text entries in scoreboard ui 
     public void UpdateDisplayPoints(int points, int teamID) {
         pointsTexts[teamID].text = MatchManager.Instance.AddPoints(points, teamID).ToString();
-        // TODO: sort scoreboard entries in descending order
         
+        // TODO: sort scoreboard entries in descending order
+        var pointsList = new List<int>();
+        var teamslist = teams.ToList();
+        var sortedTextsGameObjects = new GameObject[pointsTexts.Length];
+        
+        for (var i = 0; i < pointsTexts.Length; i++) {
+            pointsList.Add(int.Parse(pointsTexts[i].text));
+        }
+
+        for (var i = 0; i < pointsTexts.Length; i++) {
+            var max = 0;
+            var index = -1;
+            var count = 0;
+            for (var j = 0; j < pointsList.Count; j++) {
+                if (pointsList[j] > max) {
+                    max = pointsList[j];
+                    index = j;
+                }
+            }
+            pointsList.Remove(max);
+            if (index >= 0) count++;
+            sortedTextsGameObjects[i] = index == -1 ? teamslist[0] : teamslist[index];
+            teamslist.Remove(sortedTextsGameObjects[i]);
+        }
+
+        var offset = 200;
+        for (var i = 0; i < sortedTextsGameObjects.Length; i++) {
+            var pos = sortedTextsGameObjects[i].transform.localPosition;
+            sortedTextsGameObjects[i].transform.localPosition = new Vector3(pos.x, offset, pos.z);
+            offset -= 100;
+        }
+
     }
 
     private void SortTeams() {
