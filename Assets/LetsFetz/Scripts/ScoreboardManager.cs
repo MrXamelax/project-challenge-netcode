@@ -51,7 +51,7 @@ public class ScoreboardManager : MonoBehaviour {
     // Update player text entries in scoreboard ui 
     public void UpdateDisplayScoreboard() {
         for (var j = 0; j < teamsList.Count; j++) {
-            teamsList[j][0].text = $"1 Team {j+1}";
+            teamsList[j][0].text = $"{j+1} Team {j+1}";
             
             for (var i = 1; i < teamsList[j].Length; i++) {
                 if (teamManager.teams[j].Count < i) teamsList[j][i].text = "";
@@ -95,16 +95,10 @@ public class ScoreboardManager : MonoBehaviour {
             var pos = sortedTextsGameObjects[i].transform.localPosition;
             sortedTextsGameObjects[i].transform.localPosition = new Vector3(pos.x, offset, pos.z);
             offset -= 100;
+            var text = sortedTextsGameObjects[i].GetComponentInChildren<TMP_Text>().text;
+            sortedTextsGameObjects[i].GetComponentInChildren<TMP_Text>().text = i+1 + text.Substring(1);
         }
 
-    }
-
-    private void SortTeams() {
-        var max = 0;
-        foreach (var points in pointsTexts) {
-            if (int.Parse(points.text) > max) max = int.Parse(points.text);
-            
-        }
     }
     
 }
