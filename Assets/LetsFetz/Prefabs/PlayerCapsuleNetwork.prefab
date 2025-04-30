@@ -280,7 +280,7 @@ GameObject:
   - component: {fileID: 3280149161703929940}
   - component: {fileID: 2754088400282405635}
   - component: {fileID: 10834347653435914}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Nose
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -294,7 +294,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1513538185576626726}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 1.63, z: 0.57}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.25}
   m_ConstrainProportionsScale: 0
@@ -706,7 +706,7 @@ GameObject:
   - component: {fileID: 5033596863911505559}
   - component: {fileID: 6498875424041014196}
   - component: {fileID: 1431618784725251785}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: EarRight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -722,7 +722,7 @@ Transform:
   m_GameObject: {fileID: 4493024644675435674}
   m_LocalRotation: {x: 0.71135974, y: -0.08895342, z: -0.13374615, w: 0.68422705}
   m_LocalPosition: {x: 0.348, y: 1.996, z: 0.174}
-  m_LocalScale: {x: 0.39538908, y: 0.024552913, z: 0.4679271}
+  m_LocalScale: {x: 0.39538908, y: 0.02455291, z: 0.4679271}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8997996947095583982}
@@ -951,7 +951,7 @@ GameObject:
   - component: {fileID: 5110562193549422196}
   - component: {fileID: 4855298273320611445}
   - component: {fileID: 4608894971059249738}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: EarLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -967,7 +967,7 @@ Transform:
   m_GameObject: {fileID: 5129105801495915555}
   m_LocalRotation: {x: 0.6977796, y: 0.16446202, z: 0.113022976, w: 0.6879547}
   m_LocalPosition: {x: -0.344, y: 1.996, z: 0.174}
-  m_LocalScale: {x: 0.39538908, y: 0.024552913, z: 0.4679271}
+  m_LocalScale: {x: 0.39538908, y: 0.02455292, z: 0.46792716}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8997996947095583982}
@@ -1034,7 +1034,7 @@ GameObject:
   - component: {fileID: 5393215578589016641}
   - component: {fileID: 5393215578589016654}
   - component: {fileID: 5393215578589016655}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: Capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1048,7 +1048,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5393215578589016642}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
