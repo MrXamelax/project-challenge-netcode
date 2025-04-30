@@ -121,7 +121,7 @@ public class Constants {
         = 5;
 
     public const int PLAYER_TIME_OUT_OF_COMBAT
-        = 4;
+        = 6;
 
     public const float PLAYER_SHOOT_INTERVAL
         = 0.1f;
