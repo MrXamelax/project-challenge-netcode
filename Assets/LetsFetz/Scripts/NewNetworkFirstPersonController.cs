@@ -589,8 +589,12 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
         if (IsOwner) return;
         
         //TODO: try to remove this line later
-        if (other.GetComponent<Bullet>().bulletClientID == NetworkObject.OwnerClientId) return;
-        if (other.GetComponent<Bullet>().bulletClientID != NetworkManager.Singleton.LocalClientId) return;
+        var bulletClientID = other.GetComponent<Bullet>().bulletClientID;
+        if (bulletClientID == NetworkObject.OwnerClientId) return;
+        if (bulletClientID != NetworkManager.Singleton.LocalClientId) return;
+        
+        var teamManager = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<TeamManager>();
+        if (teamManager.teams[GetComponent<TeamManager>().GetLocalTeamID()-1].Contains(bulletClientID)) return;
         
         // Damage Logic
         if (!IsHost) {
@@ -599,18 +603,18 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
             _cOutOfCombatTimer = StartCoroutine(OutOfCombatTimer());
             _healthSystem.Damage(Constants.PLAYER_DAMAGE_PER_SHOT);
         }
-        DamageServerRpc();
+        DamageServerRpc(OwnerClientId);
         Debug.Log("I got hit! ID: " + OwnerClientId);
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void DamageServerRpc(ServerRpcParams rpcParams = default) {
+    private void DamageServerRpc(ulong clientID,ServerRpcParams rpcParams = default) {
         _inCombat = true;
         if (_cOutOfCombatTimer != null) StopCoroutine(_cOutOfCombatTimer);
         _cOutOfCombatTimer = StartCoroutine(OutOfCombatTimer());
         _healthSystem.Damage(Constants.PLAYER_DAMAGE_PER_SHOT);
         DamageClientRpc(new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = ClientListExcept(rpcParams.Receive.SenderClientId)}});
-        DropZealClientRpc(new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = new List<ulong> {rpcParams.Receive.SenderClientId}}});
+        DropZealClientRpc(new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = new List<ulong> {clientID}}});
     }
     
     [ClientRpc]
