@@ -430,6 +430,12 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
     private void Shoot_canceled(InputAction.CallbackContext context) {
         //Debug.Log("Stop Shooting!");
     }
+    
+    [ClientRpc]
+    private void DropZealClientRpc(ClientRpcParams rpcParams = default) {
+        NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<NewNetworkFirstPersonController>().DropZeal();
+        DropZeal();
+    }
 
     private void DropZeal() {
         var rpcs = GetComponent<PlayerRpcs>();
@@ -594,7 +600,7 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
             _healthSystem.Damage(Constants.PLAYER_DAMAGE_PER_SHOT);
         }
         DamageServerRpc();
-        
+        Debug.Log("I got hit! ID: " + OwnerClientId);
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -604,6 +610,7 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
         _cOutOfCombatTimer = StartCoroutine(OutOfCombatTimer());
         _healthSystem.Damage(Constants.PLAYER_DAMAGE_PER_SHOT);
         DamageClientRpc(new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = ClientListExcept(rpcParams.Receive.SenderClientId)}});
+        DropZealClientRpc(new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = new List<ulong> {rpcParams.Receive.SenderClientId}}});
     }
     
     [ClientRpc]

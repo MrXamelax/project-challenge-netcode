@@ -271,6 +271,7 @@ public class TeamManager : NetworkBehaviour {
     #region Add Progress
 
     public void AddProgressOnServer(int teamID, Contract contract, int progress) {
+        //if (!MatchManager.Instance.IsMatchRunning()) return;
         var contractType = Constants.CONTRACT_MAP[contract.GetContractID()].GetType();
         var contractProgress = ContractManager.Instance.GetContractOfType2(teamID, contractType);
         var points = contractProgress.AddProgress(progress);

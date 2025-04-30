@@ -114,6 +114,7 @@ public class GameUI : MonoBehaviour {
 
     public void OnMatchEnd() {
         _playerInputActions.Player.Disable();
+        endScreen.SetActive(true);
         ammoCount.SetActive(false);
         scoreboard.SetActive(true);
     }
