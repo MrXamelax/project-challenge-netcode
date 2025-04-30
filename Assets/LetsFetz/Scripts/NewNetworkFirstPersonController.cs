@@ -86,6 +86,7 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
     private int _secondsPassed = 0;
 
     private bool _inCombat;
+    private bool _firstLife = true;
 
     private Coroutine _cOutOfCombatTimer;
 
@@ -165,6 +166,8 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
 
         _playerInputActions.Player.OpenMenu.performed += OpenMenu_performed;
         
+        _healthSystem.OnDeath += OnDeath;
+        
         //GameUI.Instance.OnInitialize(_healthSystem);
         GameUI.Instance.OnInitialize(_healthSystem);
         FollowPlayer.Instance.OnInitialize(transform);
@@ -175,6 +178,19 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
         _cinemachineVirtualCamera = GameObject.FindGameObjectWithTag("VirtualCamera");
         _cinemachineVirtualCamera.GetComponent<CinemachineVirtualCamera>().Follow =
             _cinemachineCameraTarget.transform;
+    }
+
+    private void OnDeath(object sender, EventArgs e) {
+        Debug.Log("OnDeath()");
+        if (_firstLife) {
+            _firstLife = false;
+            transform.position = GetComponent<TeamManager>().GetLocalSpawnPos();
+            _healthSystem.Heal(Constants.PLAYER_MAX_HEALTH);
+            return;
+        }
+
+        Debug.Log("Tot!");
+        //NetworkManager.Singleton.LocalClient.PlayerObject.gameObject.GetComponent<TeamManager>().DeathServerRpc();
     }
 
     private void LateUpdate() {

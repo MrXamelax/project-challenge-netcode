@@ -15,6 +15,8 @@ public class TeamManager : NetworkBehaviour {
     private List<Transform> teamSpawns;
 
     private int localTeamID;
+
+    private Vector3 _localSpawnPos;
     
     public int GetLocalTeamID() {
         return localTeamID;
@@ -85,11 +87,21 @@ public class TeamManager : NetworkBehaviour {
             teamSpawns.Remove(teamSpawn);
         }
     }
+
+    public Vector3 GetLocalSpawnPos() {
+        return _localSpawnPos;
+    }
+    
+    private void SetLocalSpawnPos(Vector3 pos) {
+        _localSpawnPos = pos;
+    }
     
     // Teleport local player to given coordinates
     [ClientRpc]
     private void TeleportClientRpc(float x, float y, float z, ClientRpcParams rpcParams = default) {
-        NetworkManager.Singleton.LocalClient.PlayerObject.transform.position = new Vector3(x, y, z);
+        var player = NetworkManager.Singleton.LocalClient.PlayerObject;
+        player.transform.position = new Vector3(x, y, z);
+        player.GetComponent<TeamManager>().SetLocalSpawnPos(new Vector3(x, y, z));
     }
 
     #region SetTeamID
