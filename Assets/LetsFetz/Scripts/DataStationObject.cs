@@ -91,7 +91,7 @@ public class DataStationObject : MonoBehaviour {
     
     //TODO: Beep Boop we send progress on contract to according clients and they locally do their thing
     IEnumerator ProgressTicking() {
-        while (true) {
+        while (MatchManager.Instance.IsMatchRunning()) {
             yield return new WaitForSeconds(Constants.DATASTATION_TIME_PER_TICK);
             if (!captured) break;
             Debug.Log($"Adding {Constants.DATASTATION_PROGRESS_PER_TICK} Data Station progress to team {capturedByTeamID}");

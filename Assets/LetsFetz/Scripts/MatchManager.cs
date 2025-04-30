@@ -77,5 +77,7 @@ public class MatchManager : MonoBehaviour {
 
     public void EndMatch() {
         isMatchRunning = false;
+        ShootManager.Instance.OnMatchEnd();
+        GameUI.Instance.OnMatchEnd();
     }
 }

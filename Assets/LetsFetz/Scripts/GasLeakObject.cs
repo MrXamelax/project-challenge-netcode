@@ -97,7 +97,7 @@ public class GasLeakObject : NetworkBehaviour, IInteractable {
     }
 
     IEnumerator ProgressTicking() {
-        while (true) {
+        while (MatchManager.Instance.IsMatchRunning()) {
             yield return new WaitForSeconds(Constants.GASLEAK_TIME_PER_TICK);
             if (!isRefining) break;
             Debug.Log($"Adding {Constants.GASLEAK_PROGRESS_PER_TICK_BY_LEVEL[refinerLevel]} Gas Leak progress to team {capturedByTeamID}");

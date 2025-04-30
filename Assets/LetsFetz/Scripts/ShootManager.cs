@@ -52,6 +52,10 @@ public class ShootManager : MonoBehaviour {
     public void OnDeath() {
         _playerInputActions.Player.Disable();
     }
+    
+    public void OnMatchEnd() {
+        _playerInputActions.Disable();
+    }
 
     private void Shoot_started(InputAction.CallbackContext obj) {
         if (!MatchManager.Instance.IsMatchRunning() || isReloading) return;

@@ -77,7 +77,7 @@ public class ZealObject : MonoBehaviour, IInteractable {
     }
 
     public IEnumerator ProgressTicking() {
-        while (true) {
+        while (MatchManager.Instance.IsMatchRunning()) {
             yield return new WaitForSeconds(Constants.ZEAL_TIME_PER_TICK);
             if (capturedByTeamID == -1) break;
             var progress = _isRed ? Constants.ZEAL_RED_PROGRESS_PER_TICK : Constants.ZEAL_YELLOW_PROGRESS_PER_TICK;

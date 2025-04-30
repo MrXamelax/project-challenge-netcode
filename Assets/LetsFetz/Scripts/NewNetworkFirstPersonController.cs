@@ -317,6 +317,8 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
 
     private void EndMatch() {
         _playerInputActions.Player.Disable();
+        Cursor.lockState = CursorLockMode.Confined;
+        Cursor.visible = true;
         MatchManager.Instance.EndMatch();
     }
 

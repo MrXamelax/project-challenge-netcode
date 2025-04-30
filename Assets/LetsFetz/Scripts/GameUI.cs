@@ -28,6 +28,8 @@ public class GameUI : MonoBehaviour {
     [SerializeField] private Transform reloadBarFill;
 
     [SerializeField] private TMP_Text datastationText;
+
+    [SerializeField] private GameObject endScreen;
     
     private NewPlayerInputActions _playerInputActions;
 
@@ -108,6 +110,12 @@ public class GameUI : MonoBehaviour {
     public void OnDeath() {
         ammoCount.SetActive(false);
         healthBar.SetActive(false);
+    }
+
+    public void OnMatchEnd() {
+        _playerInputActions.Player.Disable();
+        ammoCount.SetActive(false);
+        scoreboard.SetActive(true);
     }
     
     public void UpdateDisplayAmmo(int ammoCurrent) {
