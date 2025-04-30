@@ -355,7 +355,7 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
         timerTxt.text = $"{_minutesRemaining}:{secondsPrefix}{_secondsRemaining}";
 
         if (_minutesRemaining == 0 && _secondsRemaining == 0) {
-            EndMatch();
+            NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<NewNetworkFirstPersonController>().EndMatch();
         } else {
             StartCoroutine(TimerCountdown());
         }
