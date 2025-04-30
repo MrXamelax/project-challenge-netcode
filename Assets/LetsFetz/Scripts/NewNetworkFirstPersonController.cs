@@ -190,8 +190,17 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
         }
 
         Debug.Log("Tot!");
+        DeathProcess();
         //NetworkManager.Singleton.LocalClient.PlayerObject.gameObject.GetComponent<TeamManager>().DeathServerRpc();
     }
+
+    private void DeathProcess() {
+        ShootManager.Instance.OnDeath();
+        GameUI.Instance.OnDeath();
+        transform.position = MatchManager.Instance.GetDeathZonePosition();
+    }
+    
+    
 
     private void LateUpdate() {
         if (IsOwner) PlayerRotation();

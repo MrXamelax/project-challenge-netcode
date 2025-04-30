@@ -104,6 +104,11 @@ public class GameUI : MonoBehaviour {
         ammoCountText.text = $"{Constants.PLAYER_MAX_AMMO} / {Constants.PLAYER_MAX_AMMO}";
         InitializeDisplayProgress();
     }
+
+    public void OnDeath() {
+        ammoCount.SetActive(false);
+        healthBar.SetActive(false);
+    }
     
     public void UpdateDisplayAmmo(int ammoCurrent) {
         ammoCountText.text = $"{ammoCurrent} / {Constants.PLAYER_MAX_AMMO}";

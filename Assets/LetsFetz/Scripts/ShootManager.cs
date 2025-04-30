@@ -49,6 +49,10 @@ public class ShootManager : MonoBehaviour {
         _rpcs = tf.gameObject.GetComponent<PlayerRpcs>();
     }
 
+    public void OnDeath() {
+        _playerInputActions.Player.Disable();
+    }
+
     private void Shoot_started(InputAction.CallbackContext obj) {
         if (!MatchManager.Instance.IsMatchRunning() || isReloading) return;
         if (_ammoCurrent > 0) _shootingCoroutine = StartCoroutine(ShootingCycle());

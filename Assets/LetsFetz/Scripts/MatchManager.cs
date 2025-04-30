@@ -12,6 +12,8 @@ public class MatchManager : MonoBehaviour {
     private string localName;
     private int localPoints;
 
+    [SerializeField] private Transform deathZone;
+
     // Index 0: Team 1, Index 1: Team 2, ...
     private int[] pointsTeams;
     
@@ -30,6 +32,10 @@ public class MatchManager : MonoBehaviour {
         
         playerNames = new Dictionary<ulong, string>();
         pointsTeams = new int[5];
+    }
+    
+    public Vector3 GetDeathZonePosition() {
+        return deathZone.position;
     }
     
     // Setter for local TeamManager
