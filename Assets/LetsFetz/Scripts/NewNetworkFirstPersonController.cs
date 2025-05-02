@@ -81,7 +81,7 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
     private GameObject timer;
     private TMP_Text timerTxt;
 
-    private int _minutesRemaining = 20;
+    private int _minutesRemaining = 1;
     private int _secondsRemaining;
     private int _secondsPassed = 0;
 
@@ -300,8 +300,7 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
         timer.SetActive(true);
         StartCoroutine(TimerCountdown());
         
-        //TODO: Players need to spawn with their whole team at a spawn point
-        //transform.position = new Vector3(58,35,45);
+        LoggingManager.Instance.ToggleLogging(true);
         return true;
     }
 
@@ -320,6 +319,7 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
         Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = true;
         MatchManager.Instance.EndMatch();
+        if (IsOwner && IsHost) LoggingManager.Instance.ToggleLogging(false);
     }
 
     IEnumerator TimerCountdown() {
@@ -649,6 +649,10 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
         yield return new WaitForSeconds(Constants.PLAYER_TIME_OUT_OF_COMBAT);
         _inCombat = false;
         StartCoroutine(RegenerateHealth());
+    }
+
+    public int GetHealth() {
+        return _healthSystem.GetHealth();
     }
 
     IEnumerator RegenerateHealth() {

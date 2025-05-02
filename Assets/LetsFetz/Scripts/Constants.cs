@@ -148,6 +148,9 @@ public class Constants {
         = 1;
     
     #endregion
+
+    // Time in seconds between each regular log
+    public const float LOGGER_INTERVAL = 1f;
     
     public static ReadOnlyDictionary<int, Contract> CONTRACT_MAP =
         new ReadOnlyDictionary<int, Contract>(new Dictionary<int, Contract> {
