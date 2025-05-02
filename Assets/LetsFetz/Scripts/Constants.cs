@@ -9,7 +9,6 @@ public class Constants {
 
 
     // Data Station Values
-
     #region Data Station
 
     // Time needed to capture a data station
@@ -39,7 +38,6 @@ public class Constants {
 
 
     // Gas Leak Values
-
     #region Gas Leak
 
     // Time needed to capture a gas leak
@@ -72,7 +70,6 @@ public class Constants {
 
 
     // Zeal Values
-
     #region Zeal
     
     // Unique GameObject name to find the object in the scene
@@ -83,55 +80,70 @@ public class Constants {
     public const string ZEAL_RED_GAMEOBJECT_TAG 
         = "ZealRed";
     
-    // Time in seconds needed in Match to pass before the yellow zeal is spawned by the host
+    // Time in seconds needed in match to pass before the yellow zeal is spawned by the host
     public const int ZEAL_YELLOW_SPAWN_TIMESTAMP 
         = 40;
     
-    // Time in seconds needed in Match to pass before the red zeal is spawned by the host
+    // Time in seconds needed in match to pass before the red zeal is spawned by the host
     public const int ZEAL_RED_SPAWN_TIMESTAMP 
         = 90;
     
+    // Time in seconds between each progress tick
     public const int ZEAL_TIME_PER_TICK 
         = 3;
 
+    // Progression value added from yellow variant to contract per tick
     public const int ZEAL_YELLOW_PROGRESS_PER_TICK
         = 10;
 
+    // Progression value added from red variant to contract per tick
     public const int ZEAL_RED_PROGRESS_PER_TICK
         = 15;
     
+    // Total progression value needed to level up for corresponding level
     public static readonly int[] ZEAL_PROGRESS_PER_LEVEL
         = { 50, 60, 60, 100 };
     
+    // Points awarded to team by completing the full progress of the corresponding level
     public static readonly int[] ZEAL_POINTS_PER_LEVEL
         = { 10, 20, 25, 30, 40 };
     
     #endregion
 
 
+    // Player Values
     #region Player
     
+    // Maximum player health
     public const int PLAYER_MAX_HEALTH
         = 400;
 
+    // Time in seconds between each regeneration tick
     public const float PLAYER_TIME_PER_HEALTH_TICK
         = 0.2f;
     
+    // Health regeneration per tick
     public const int PLAYER_HEALTH_PER_TICK
         = 5;
 
+    // Time in seconds before player is considered out of combat
     public const int PLAYER_TIME_OUT_OF_COMBAT
         = 6;
 
+    // Time in seconds between each shot
     public const float PLAYER_SHOOT_INTERVAL
         = 0.1f;
 
+    // Damage per shot
     public const int PLAYER_DAMAGE_PER_SHOT
         = 9;
     
+    // Maximum player ammo
     public const int PLAYER_MAX_AMMO
         = 23;
 
+    // Time in seconds it takes to reload, is somewhat off in implementation
+    //TODO: inspect further in the future
     public const float PLAYER_RELOAD_TIME
         = 1;
     
