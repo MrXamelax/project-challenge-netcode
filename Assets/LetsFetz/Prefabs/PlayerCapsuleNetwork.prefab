@@ -1394,7 +1394,7 @@ MonoBehaviour:
   GroundedRadius: 0.5
   GroundLayers:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 17
   movementSpeed: 100
   sprintMultiplier: 1.5
   breakForce: 0.9
