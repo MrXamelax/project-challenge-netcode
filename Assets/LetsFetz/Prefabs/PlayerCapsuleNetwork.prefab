@@ -1480,6 +1480,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   minimapIconPlayer: {fileID: 4700274855564087621}
+  barSpriteRenderer: {fileID: 8411396648044272536}
+  colorTeam: {r: 0.148332, g: 1, b: 0, a: 0}
+  colorEnemy: {r: 1, g: 0, b: 0, a: 0}
 --- !u!114 &3591640267535245841
 MonoBehaviour:
   m_ObjectHideFlags: 0

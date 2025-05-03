@@ -9,6 +9,7 @@ using Random = Unity.Mathematics.Random;
 public class TeamManager : NetworkBehaviour {
 
     [SerializeField] private GameObject minimapIconPlayer;
+    [SerializeField] private SpriteRenderer barSpriteRenderer;
 
     // First row teamID, second row playerID
     public List<ulong>[] teams = new List<ulong>[5];
@@ -151,9 +152,16 @@ public class TeamManager : NetworkBehaviour {
         localTeamID = teamID;
         
         teamManager.UpdateTeams(teamID, OwnerClientId);
-        
-        if (teamID == teamManager.GetLocalTeamID()) minimapIconPlayer.SetActive(true);
-        else minimapIconPlayer.SetActive(false);
+
+        if (teamID == teamManager.GetLocalTeamID()) {
+            //TODO: HealthBar color green
+            minimapIconPlayer.SetActive(true);
+            barSpriteRenderer.color = Color.green;
+        } else {
+            //TODO: HealthBar color red
+            minimapIconPlayer.SetActive(false);
+            barSpriteRenderer.color = Color.red;
+        }
         
         SetTeamIDClientRpc(teamID, rpcParams.Receive.SenderClientId, swap, rpcParams.Receive.SenderClientId, new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = ClientListExcept(rpcParams.Receive.SenderClientId)}});
         teamManager.DistributeTeamUpdateServerRpc(teamID, rpcParams.Receive.SenderClientId);
@@ -173,9 +181,16 @@ public class TeamManager : NetworkBehaviour {
         localTeamID = teamID;
         
         teamManager.UpdateTeams(teamID, player);
-        
-        if (teamID == NetworkManager.Singleton.LocalClient.PlayerObject.gameObject.GetComponent<TeamManager>().GetLocalTeamID()) minimapIconPlayer.SetActive(true);
-        else minimapIconPlayer.SetActive(false);
+
+        if (teamID == NetworkManager.Singleton.LocalClient.PlayerObject.gameObject.GetComponent<TeamManager>().GetLocalTeamID()) {
+            //TODO: HealthBar color green
+            minimapIconPlayer.SetActive(true);
+            barSpriteRenderer.color = Color.green;
+        } else {
+            //TODO: HealthBar color red
+            minimapIconPlayer.SetActive(false);
+            barSpriteRenderer.color = Color.red;
+        }
         
         teamManager.DistributeTeamUpdateServerRpc(teamID, originalSender);
         
@@ -190,8 +205,15 @@ public class TeamManager : NetworkBehaviour {
 
     [ClientRpc]
     private void DistributeTeamUpdateClientRpc(int teamID, ClientRpcParams rpcParams = default) {
-        if (teamID == localTeamID) minimapIconPlayer.SetActive(true);
-        else minimapIconPlayer.SetActive(false);
+        if (teamID == localTeamID) {
+            //TODO: HealthBar color green
+            minimapIconPlayer.SetActive(true);
+            barSpriteRenderer.color = Color.green;
+        } else {
+            //TODO: HealthBar color red
+            minimapIconPlayer.SetActive(false);
+            barSpriteRenderer.color = Color.red;
+        }
         
     }
 
