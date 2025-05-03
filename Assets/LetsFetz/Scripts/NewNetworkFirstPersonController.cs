@@ -593,6 +593,7 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
         if (bulletClientID == NetworkObject.OwnerClientId) return;
         if (bulletClientID != NetworkManager.Singleton.LocalClientId) return;
         
+        // Friendly fire off
         var teamManager = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<TeamManager>();
         if (teamManager.teams[GetComponent<TeamManager>().GetLocalTeamID()-1].Contains(bulletClientID)) return;
         
@@ -608,11 +609,21 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void DamageServerRpc(ulong clientID,ServerRpcParams rpcParams = default) {
+    private void DamageServerRpc(ulong clientID, ServerRpcParams rpcParams = default) {
         _inCombat = true;
         if (_cOutOfCombatTimer != null) StopCoroutine(_cOutOfCombatTimer);
-        _cOutOfCombatTimer = StartCoroutine(OutOfCombatTimer());
+        _cOutOfCombatTimer = StartCoroutine(OutOfCombatTimer(rpcParams.Receive.SenderClientId));
         _healthSystem.Damage(Constants.PLAYER_DAMAGE_PER_SHOT);
+        
+        LoggingManager.Instance.LogEvent(
+            NetworkManager.Singleton.ConnectedClients[rpcParams.Receive.SenderClientId],
+            LoggingManager.LoggingType.DamageDone
+            );
+        LoggingManager.Instance.LogEvent(
+            NetworkManager.Singleton.ConnectedClients[clientID],
+            LoggingManager.LoggingType.DamageTaken
+            );
+        
         DamageClientRpc(new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = ClientListExcept(rpcParams.Receive.SenderClientId)}});
         DropZealClientRpc(new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = new List<ulong> {clientID}}});
     }
@@ -645,22 +656,29 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
         _healthSystem.Heal(Constants.PLAYER_HEALTH_PER_TICK);
     }
 
-    IEnumerator OutOfCombatTimer() {
+    IEnumerator OutOfCombatTimer(ulong clientID = 0) {
         yield return new WaitForSeconds(Constants.PLAYER_TIME_OUT_OF_COMBAT);
         _inCombat = false;
-        StartCoroutine(RegenerateHealth());
+        StartCoroutine(RegenerateHealth(clientID));
     }
 
     public int GetHealth() {
         return _healthSystem.GetHealth();
     }
 
-    IEnumerator RegenerateHealth() {
+    IEnumerator RegenerateHealth(ulong clientID) {
         Debug.Log("Starting Regen");
+        //TODO: start here
         while (!_inCombat && _healthSystem.GetHealth() < Constants.PLAYER_MAX_HEALTH) {
             HealPlayer();
             yield return new WaitForSeconds(Constants.PLAYER_TIME_PER_HEALTH_TICK);
         }
+
+        if (_inCombat) {
+            GetComponent<PlayerRpcs>().LogEventServerRpc(LoggingManager.LoggingType.StopRegeneration);
+            //LoggingManager.Instance.LogEvent(OwnerClientId, LoggingManager.LoggingType.StopRegeneration);
+        }
+
         Debug.Log("Stopping Regen");
     }
     

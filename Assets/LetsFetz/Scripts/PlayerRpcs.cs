@@ -25,6 +25,11 @@ public class PlayerRpcs : NetworkBehaviour {
         containerZealIconRed.transform.rotation = Quaternion.identity;
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    public void LogEventServerRpc(LoggingManager.LoggingType type, ServerRpcParams rpcParams = default) {
+        LoggingManager.Instance.LogEvent(NetworkManager.Singleton.ConnectedClients[rpcParams.Receive.SenderClientId], type);
+    }
+
     #region Shooting
     
     [ServerRpc]

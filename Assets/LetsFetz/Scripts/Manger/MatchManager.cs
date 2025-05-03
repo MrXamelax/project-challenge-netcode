@@ -33,6 +33,10 @@ public class MatchManager : MonoBehaviour {
         playerNames = new Dictionary<ulong, string>();
         pointsTeams = new int[5];
     }
+
+    public string GetPlayerNameByClientID(ulong clientID) {
+        return playerNames[clientID];
+    }
     
     public Vector3 GetDeathZonePosition() {
         return deathZone.position;
@@ -63,6 +67,10 @@ public class MatchManager : MonoBehaviour {
 
     public void AddLocalPoints(int points) {
         localPoints += points;
+    }
+    
+    public int GetPointsFromTeam(int teamID) {
+        return pointsTeams[teamID-1];
     }
     
     public bool IsMatchRunning() {
