@@ -674,7 +674,7 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
             yield return new WaitForSeconds(Constants.PLAYER_TIME_PER_HEALTH_TICK);
         }
 
-        if (_inCombat) {
+        if (_inCombat && IsOwner) {
             GetComponent<PlayerRpcs>().LogEventServerRpc(LoggingManager.LoggingType.StopRegeneration);
             //LoggingManager.Instance.LogEvent(OwnerClientId, LoggingManager.LoggingType.StopRegeneration);
         }
