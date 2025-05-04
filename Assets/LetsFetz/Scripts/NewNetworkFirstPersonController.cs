@@ -87,15 +87,20 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
 
     private bool _inCombat;
     private bool _firstLife = true;
+    private bool _alive = true;
+    private bool _vulnerable = true;
 
     private Coroutine _cOutOfCombatTimer;
 
     private GameObject _mainCamera;
+
+    private PlayerRpcs _rpcs;
     // End of Random Property Section
     
 
     private void Awake() {
         playerRb = GetComponent<Rigidbody>();
+        _rpcs = GetComponent<PlayerRpcs>();
     }
 
     private void Start() {
@@ -181,16 +186,26 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
     }
 
     private void OnDeath(object sender, EventArgs e) {
+        if (!_alive) return;
         Debug.Log("OnDeath()");
+        
+        // Respawn
         if (_firstLife) {
+            _rpcs.LogEventServerRpc(LoggingManager.LoggingType.Respawn);
             _firstLife = false;
             transform.position = GetComponent<TeamManager>().GetLocalSpawnPos();
             _healthSystem.Heal(Constants.PLAYER_MAX_HEALTH);
+            HealPlayerServerRpc(Constants.PLAYER_MAX_HEALTH);
+            _vulnerable = false;
+            StartCoroutine(RespawnProtectionTimer());
             return;
         }
 
-        Debug.Log("Tot!");
+        // Death
+        _rpcs.LogEventServerRpc(LoggingManager.LoggingType.Death);
         DeathProcess();
+        _vulnerable = false;
+        _alive = false;
         //NetworkManager.Singleton.LocalClient.PlayerObject.gameObject.GetComponent<TeamManager>().DeathServerRpc();
     }
 
@@ -200,7 +215,7 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
         transform.position = MatchManager.Instance.GetDeathZonePosition();
     }
     
-    
+    #region Movement
 
     private void LateUpdate() {
         if (IsOwner) PlayerRotation();
@@ -279,7 +294,37 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
             transform.position.z);
         _isGrounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers, QueryTriggerInteraction.Ignore);
     }
+    
+    // Rotating the player transform to match Camera POV
+    private void PlayerRotation() {
+        //transform.rotation = UnityEngine.Quaternion.Euler(transform.eulerAngles.x, _mainCamera.transform.eulerAngles.y, transform.eulerAngles.z);
+        Vector2 look = _playerInputActions.Player.Look.ReadValue<Vector2>();
+        if (look.sqrMagnitude >= _thresholdCamera) {
+            _cinemachineTargetPitch += -look.y * rotationSpeed;
+            _rotationVelocity = look.x * rotationSpeed;
 
+            _cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, bottomClamp, topClamp);
+
+            _cinemachineCameraTarget.transform.localRotation =
+                UnityEngine.Quaternion.Euler(_cinemachineTargetPitch, 0.0f, 0.0f);
+
+            transform.Rotate(Vector3.up * _rotationVelocity);
+        }
+    }
+
+    private float VelocityHorizontal() {
+        return Mathf.Abs(playerRb.velocity.x) + Mathf.Abs(playerRb.velocity.z);
+    }
+
+    private static float ClampAngle(float lfAngle, float lfMin, float lfMax) {
+        if (lfAngle < -360f) lfAngle += 360f;
+        if (lfAngle > 360f) lfAngle -= 360f;
+        return Mathf.Clamp(lfAngle, lfMin, lfMax);
+    }
+
+    #endregion
+    
+    #region Match Cycle
     private bool StartMatch() {
         
         if (GetComponentInParent<TeamManager>().GetNumberOfClientsInTeams() > NetworkManager.Singleton.ConnectedClientsIds.Count) {
@@ -361,6 +406,7 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
         }
     }
 
+    #endregion
     
     #region Zeal
     private void SpawnZeal(bool isRed = false, int randomNumber = -1) {
@@ -476,33 +522,6 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
     }
     #endregion
 
-    // Rotating the player transform to match Camera POV
-    private void PlayerRotation() {
-        //transform.rotation = UnityEngine.Quaternion.Euler(transform.eulerAngles.x, _mainCamera.transform.eulerAngles.y, transform.eulerAngles.z);
-        Vector2 look = _playerInputActions.Player.Look.ReadValue<Vector2>();
-        if (look.sqrMagnitude >= _thresholdCamera) {
-            _cinemachineTargetPitch += -look.y * rotationSpeed;
-            _rotationVelocity = look.x * rotationSpeed;
-
-            _cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, bottomClamp, topClamp);
-
-            _cinemachineCameraTarget.transform.localRotation =
-                UnityEngine.Quaternion.Euler(_cinemachineTargetPitch, 0.0f, 0.0f);
-
-            transform.Rotate(Vector3.up * _rotationVelocity);
-        }
-    }
-
-    private float VelocityHorizontal() {
-        return Mathf.Abs(playerRb.velocity.x) + Mathf.Abs(playerRb.velocity.z);
-    }
-
-    private static float ClampAngle(float lfAngle, float lfMin, float lfMax) {
-        if (lfAngle < -360f) lfAngle += 360f;
-        if (lfAngle > 360f) lfAngle -= 360f;
-        return Mathf.Clamp(lfAngle, lfMin, lfMax);
-    }
-
     #region trash
     /*
     private void ShootBullet() {
@@ -569,21 +588,14 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
     }
     */
     #endregion
-        
-    [ServerRpc]
-    private void DieServerRpc() {
-        GetComponent<NetworkObject>().Despawn();
-    }
-
-    [ServerRpc]
-    private void CheckBulletServerRpc(ServerRpcParams rpcParams = default) {
-        /*if (bulletClientID.Equals(rpcParams.Receive.SenderClientId.ToString())) {
-            Debug.Log($"Player {NetworkManager.Singleton.LocalClientId} was shot!");
-            DieServerRpc();
-        }*/
-    }
 
     #region Damage
+    
+    IEnumerator RespawnProtectionTimer() {
+        yield return new WaitForSeconds(Constants.PLAYER_RESPAWN_PROTECTION_TIME);
+        _vulnerable = true;
+    }
+    
     private void OnTriggerEnter(Collider other) {
         if (!other.CompareTag("Bullet")) return;
         if (IsOwner) return;
@@ -596,6 +608,13 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
         // Friendly fire off
         var teamManager = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<TeamManager>();
         if (teamManager.teams[GetComponent<TeamManager>().GetLocalTeamID()-1].Contains(bulletClientID)) return;
+
+        Debug.Log($"Damage! LocalClientId: {NetworkManager.Singleton.LocalClientId}, OwnerClientId: {OwnerClientId}");
+        
+        if (!_vulnerable) {
+            Debug.Log("Respawn protection!");
+            return;
+        }
         
         // Damage Logic
         if (!IsHost) {
@@ -641,19 +660,19 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
         if (!IsHost) {
             _healthSystem.Heal(Constants.PLAYER_HEALTH_PER_TICK);
         }
-        HealPlayerServerRpc();
+        HealPlayerServerRpc(Constants.PLAYER_HEALTH_PER_TICK);
     }
     
     [ServerRpc(RequireOwnership = false)]
-    private void HealPlayerServerRpc(ServerRpcParams rpcParams = default) {
-        _healthSystem.Heal(Constants.PLAYER_HEALTH_PER_TICK);
-        HealPlayerClientRpc(new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = ClientListExcept(rpcParams.Receive.SenderClientId)}});
+    private void HealPlayerServerRpc(int hp, ServerRpcParams rpcParams = default) {
+        _healthSystem.Heal(hp);
+        HealPlayerClientRpc(hp, new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = ClientListExcept(rpcParams.Receive.SenderClientId)}});
     }
     
     [ClientRpc]
-    private void HealPlayerClientRpc(ClientRpcParams rpcParams = default) {
+    private void HealPlayerClientRpc(int hp, ClientRpcParams rpcParams = default) {
         if (IsHost) return;
-        _healthSystem.Heal(Constants.PLAYER_HEALTH_PER_TICK);
+        _healthSystem.Heal(hp);
     }
 
     IEnumerator OutOfCombatTimer(ulong clientID = 0) {
