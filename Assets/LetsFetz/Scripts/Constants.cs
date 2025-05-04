@@ -147,6 +147,10 @@ public class Constants {
     public const float PLAYER_RELOAD_TIME
         = 1;
     
+    // Time in seconds, for which player is invulnerable after respawning
+    public const float PLAYER_RESPAWN_PROTECTION_TIME
+        = 1f;
+    
     #endregion
 
     // Time in seconds between each regular log
