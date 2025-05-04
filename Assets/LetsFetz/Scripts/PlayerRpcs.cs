@@ -55,6 +55,10 @@ public class PlayerRpcs : NetworkBehaviour {
     
     [ServerRpc(RequireOwnership = false)]
     public void PickUpZealServerRpc(bool isRed, int teamID, ServerRpcParams rpcParams = default) {
+        LoggingManager.Instance.LogEvent(
+            NetworkManager.Singleton.ConnectedClients[rpcParams.Receive.SenderClientId],
+            isRed ? LoggingManager.LoggingType.CaptureRedZeal : LoggingManager.LoggingType.CaptureYellowZeal
+        );
         PickUpZealClientRpc(isRed, rpcParams.Receive.SenderClientId, teamID);
     }
 
@@ -81,6 +85,10 @@ public class PlayerRpcs : NetworkBehaviour {
 
     [ServerRpc]
     public void DropZealServerRpc(bool isRed, float xP, float yP, float zP, ServerRpcParams rpcParams = default) {
+        LoggingManager.Instance.LogEvent(
+            NetworkManager.Singleton.ConnectedClients[rpcParams.Receive.SenderClientId],
+            isRed ? LoggingManager.LoggingType.DropRedZeal : LoggingManager.LoggingType.DropYellowZeal
+        );
         DropZealClientRpc(isRed, rpcParams.Receive.SenderClientId, xP, yP, zP);
     }
     
