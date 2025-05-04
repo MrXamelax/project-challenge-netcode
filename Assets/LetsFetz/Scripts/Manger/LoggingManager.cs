@@ -23,7 +23,8 @@ public class LoggingManager : MonoBehaviour {
         DamageDone, DamageTaken, StopRegeneration,
         Respawn, Death, 
         CaptureDataStation, CaptureYellowZeal, CaptureRedZeal, CaptureGasLeak,
-        DropYellowZeal, DropRedZeal, StealGasLeak
+        DropYellowZeal, DropRedZeal, StealGasLeak,
+        PointsDataStation, PointsZeal, PointsGasLeak
     }
 
     private void Awake() {
