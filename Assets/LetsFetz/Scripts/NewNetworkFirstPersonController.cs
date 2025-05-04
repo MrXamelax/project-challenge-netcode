@@ -184,36 +184,6 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
         _cinemachineVirtualCamera.GetComponent<CinemachineVirtualCamera>().Follow =
             _cinemachineCameraTarget.transform;
     }
-
-    private void OnDeath(object sender, EventArgs e) {
-        if (!_alive) return;
-        Debug.Log("OnDeath()");
-        
-        // Respawn
-        if (_firstLife) {
-            _rpcs.LogEventServerRpc(LoggingManager.LoggingType.Respawn);
-            _firstLife = false;
-            transform.position = GetComponent<TeamManager>().GetLocalSpawnPos();
-            _healthSystem.Heal(Constants.PLAYER_MAX_HEALTH);
-            HealPlayerServerRpc(Constants.PLAYER_MAX_HEALTH);
-            _vulnerable = false;
-            StartCoroutine(RespawnProtectionTimer());
-            return;
-        }
-
-        // Death
-        _rpcs.LogEventServerRpc(LoggingManager.LoggingType.Death);
-        DeathProcess();
-        _vulnerable = false;
-        _alive = false;
-        //NetworkManager.Singleton.LocalClient.PlayerObject.gameObject.GetComponent<TeamManager>().DeathServerRpc();
-    }
-
-    private void DeathProcess() {
-        ShootManager.Instance.OnDeath();
-        GameUI.Instance.OnDeath();
-        transform.position = MatchManager.Instance.GetDeathZonePosition();
-    }
     
     #region Movement
 
@@ -590,6 +560,36 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
     #endregion
 
     #region Damage
+    
+    private void OnDeath(object sender, EventArgs e) {
+        if (!_alive) return;
+        Debug.Log("OnDeath()");
+        
+        // Respawn
+        if (_firstLife) {
+            _rpcs.LogEventServerRpc(LoggingManager.LoggingType.Respawn);
+            _firstLife = false;
+            transform.position = GetComponent<TeamManager>().GetLocalSpawnPos();
+            _healthSystem.Heal(Constants.PLAYER_MAX_HEALTH);
+            HealPlayerServerRpc(Constants.PLAYER_MAX_HEALTH);
+            _vulnerable = false;
+            StartCoroutine(RespawnProtectionTimer());
+            return;
+        }
+
+        // Death
+        _rpcs.LogEventServerRpc(LoggingManager.LoggingType.Death);
+        DeathProcess();
+        _vulnerable = false;
+        _alive = false;
+        //NetworkManager.Singleton.LocalClient.PlayerObject.gameObject.GetComponent<TeamManager>().DeathServerRpc();
+    }
+
+    private void DeathProcess() {
+        ShootManager.Instance.OnDeath();
+        GameUI.Instance.OnDeath();
+        transform.position = MatchManager.Instance.GetDeathZonePosition();
+    }
     
     IEnumerator RespawnProtectionTimer() {
         yield return new WaitForSeconds(Constants.PLAYER_RESPAWN_PROTECTION_TIME);
