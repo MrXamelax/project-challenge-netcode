@@ -86,6 +86,10 @@ public class DataStationObject : MonoBehaviour {
         }
 
         if (winningTeamID > 0) {
+            if (winningTeamID == capturedByTeamID) {
+                Debug.Log("Your team already owns the data station!");
+                return;
+            }
             cCaptureDataStation = StartCoroutine(CaptureDataStation(winningTeamID));
         } else {
             StopCoroutine(cCaptureDataStation);
