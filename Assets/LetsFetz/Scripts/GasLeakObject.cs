@@ -31,6 +31,10 @@ public class GasLeakObject : NetworkBehaviour, IInteractable {
             return;
         }
         
+        NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerRpcs>().LogEventServerRpc(
+            isRefining ? LoggingManager.LoggingType.StealGasLeak : LoggingManager.LoggingType.CaptureGasLeak
+        );
+        
         if (!IsHost) {
             Capture(teamManager.GetLocalTeamID());
             var steal = capturedByTeamID != teamManager.GetLocalTeamID();
