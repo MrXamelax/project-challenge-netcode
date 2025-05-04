@@ -85,11 +85,12 @@ public class PlayerRpcs : NetworkBehaviour {
 
     [ServerRpc]
     public void DropZealServerRpc(bool isRed, float xP, float yP, float zP, ServerRpcParams rpcParams = default) {
-        if (IsHost && IsOwner) LoggingManager.Instance.LogEvent(
-            NetworkManager.Singleton.ConnectedClients[rpcParams.Receive.SenderClientId],
+        var senderClientId = rpcParams.Receive.SenderClientId;
+        if (senderClientId == OwnerClientId) LoggingManager.Instance.LogEvent(
+            NetworkManager.Singleton.ConnectedClients[senderClientId],
             isRed ? LoggingManager.LoggingType.DropRedZeal : LoggingManager.LoggingType.DropYellowZeal
         );
-        DropZealClientRpc(isRed, rpcParams.Receive.SenderClientId, xP, yP, zP);
+        DropZealClientRpc(isRed, senderClientId, xP, yP, zP);
     }
     
     [ClientRpc]
