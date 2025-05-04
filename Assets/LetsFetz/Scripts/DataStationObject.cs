@@ -17,10 +17,20 @@ public class DataStationObject : MonoBehaviour {
 
     private PlayerRpcs _rpcs;
 
+    //private ulong[] _lastClientFromTeam;
+    private List<ulong>[] _clientsFromTeams;
+
     private void Awake() {
         cCaptureDataStation = StartCoroutine(CaptureDataStation(0));
         StopCoroutine(cCaptureDataStation);
         gameObject.name = Constants.DATASTATION_GAMEOBJECT_NAME;
+        
+        //_lastClientFromTeam = new ulong[5];
+        _clientsFromTeams = new List<ulong>[5];
+        
+        for (int i = 0; i < _clientsFromTeams.Length; i++) {
+            _clientsFromTeams[i] = new List<ulong>();
+        }
     }
 
     public void SetTeamManager(TeamManager teamManagerHere) {
@@ -30,13 +40,23 @@ public class DataStationObject : MonoBehaviour {
 
     private void OnTriggerEnter(Collider other) {
         if (!NetworkManager.Singleton.IsHost || !other.CompareTag("Player")) return;
-        activePlayersFromTeams[other.GetComponent<TeamManager>().GetLocalTeamID()-1] += 1;
+        var teamID = other.GetComponent<TeamManager>().GetLocalTeamID()-1;
+        activePlayersFromTeams[teamID] += 1;
+        
+        //_lastClientFromTeam[teamID] = other.GetComponent<NetworkObject>().OwnerClientId;
+        
+        _clientsFromTeams[teamID].Add(other.GetComponent<NetworkObject>().OwnerClientId);
+        
         CheckCapture(true);
     }
     
     private void OnTriggerExit(Collider other) {
         if (!NetworkManager.Singleton.IsHost || !other.CompareTag("Player")) return;
-        activePlayersFromTeams[other.GetComponent<TeamManager>().GetLocalTeamID()-1] -= 1;
+        var teamID = other.GetComponent<TeamManager>().GetLocalTeamID()-1;
+        activePlayersFromTeams[teamID] -= 1;
+        
+        _clientsFromTeams[teamID].Remove(other.GetComponent<NetworkObject>().OwnerClientId);
+        
         CheckCapture(false);
     }
 
@@ -85,11 +105,13 @@ public class DataStationObject : MonoBehaviour {
         Debug.Log($"Team {teamID} captured!");
         capturedByTeamID = teamID;
         _rpcs.CaptureDataStationServerRpc(capturedByTeamID.ToString());
+        LoggingManager.Instance.LogEvent(
+            NetworkManager.Singleton.ConnectedClients[_clientsFromTeams[teamID-1][0]],
+            LoggingManager.LoggingType.CaptureDataStation);
         captured = true;
         StartCoroutine(ProgressTicking());
     }
     
-    //TODO: Beep Boop we send progress on contract to according clients and they locally do their thing
     IEnumerator ProgressTicking() {
         while (MatchManager.Instance.IsMatchRunning()) {
             yield return new WaitForSeconds(Constants.DATASTATION_TIME_PER_TICK);
