@@ -19,7 +19,7 @@ public class LoggingManager : MonoBehaviour {
     private string _loggingFolderPath;
 
     public enum LoggingType {
-        Regular,
+        Regular, Error,
         DamageDone, DamageTaken, StopRegeneration,
         Respawn, Death, 
         CaptureDataStation, CaptureYellowZeal, CaptureRedZeal, CaptureGasLeak,

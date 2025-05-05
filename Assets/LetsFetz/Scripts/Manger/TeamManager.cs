@@ -225,7 +225,6 @@ public class TeamManager : NetworkBehaviour {
 
     #region Player Name
     
-    
     public void RetrievePlayerName() {
         if (OwnerClientId == NetworkManager.Singleton.LocalClientId) {
              GetComponentInChildren<NameTagSetup>().SetTextNameTag(MatchManager.Instance.GetLocalName());
@@ -265,7 +264,6 @@ public class TeamManager : NetworkBehaviour {
     
     #region Add Points
     
-    
     public void AddPoints(int points) {
         if (!IsHost) {
             ScoreboardManager.Instance.UpdateDisplayPoints(points, localTeamID-1);
@@ -277,6 +275,7 @@ public class TeamManager : NetworkBehaviour {
     // teamID starts at 0 from here on!! --> call with -1
     [ServerRpc]
     private void AddPointsServerRpc(int points, int teamID, ServerRpcParams rpcParams = default) {
+        if (!MatchManager.Instance.IsMatchRunning()) return;
         Debug.Log($"Awarding {points} points to team {teamID+1}!");
         ScoreboardManager.Instance.UpdateDisplayPoints(points, teamID);
         AddPointsClientRpc(points, teamID, new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = ClientListExcept(rpcParams.Receive.SenderClientId)}});
@@ -293,13 +292,37 @@ public class TeamManager : NetworkBehaviour {
     #region Add Progress
 
     public void AddProgressOnServer(int teamID, Contract contract, int progress) {
-        //if (!MatchManager.Instance.IsMatchRunning()) return;
+        if (!MatchManager.Instance.IsMatchRunning()) return;
         var contractType = Constants.CONTRACT_MAP[contract.GetContractID()].GetType();
         var contractProgress = ContractManager.Instance.GetContractOfType2(teamID, contractType);
         var points = contractProgress.AddProgress(progress);
         GameUI.Instance.UpdateDisplayProgress();
         GameUI.Instance.UpdateDisplayPoints();
-        if (points > 0) AddPointsServerRpc(points, teamID-1);
+        if (points > 0) {
+            AddPointsServerRpc(points, teamID-1);
+            LoggingManager.LoggingType loggingType;
+            // Hard coded but no better solution right now
+            Debug.Log($"contractType: {contractType.ToString()}");
+            switch (contractType.ToString()) {
+                case "Contracts.DataStation":
+                    loggingType = LoggingManager.LoggingType.PointsDataStation;
+                    break;
+                case "Contracts.Zeal":
+                    loggingType = LoggingManager.LoggingType.PointsZeal;
+                    break;
+                case "Contracts.GasLeak":
+                    loggingType = LoggingManager.LoggingType.PointsGasLeak;
+                    break;
+                default:
+                    loggingType = LoggingManager.LoggingType.Error;
+                    Debug.Log("Something went wrong uh-oh!");
+                    break;
+            }
+            LoggingManager.Instance.LogEvent(
+                NetworkManager.Singleton.ConnectedClients[teams[teamID-1][0]],
+                loggingType
+            );
+        }
         UpdateAllContractsProgress(teamID-1);
     }
     
