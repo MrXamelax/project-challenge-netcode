@@ -56,7 +56,7 @@ public class Constants {
         = { 1, 2, 5 };
 
     public static readonly int[] GASLEAK_TIME_TO_LEVELUP
-        = { 15, 45, 90 };
+        = { 30, 60, 120 };
 
     // Total progression value needed to level up for corresponding level
     public static readonly int[] GASLEAK_PROGRESS_PER_LEVEL
