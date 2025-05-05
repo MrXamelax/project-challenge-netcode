@@ -99,8 +99,8 @@ public class DataStationObject : MonoBehaviour {
         LoggingManager.Instance.LogEvent(
             NetworkManager.Singleton.ConnectedClients[_clientsFromTeams[teamID-1][0]],
             LoggingManager.LoggingType.CaptureDataStation);
+        if (!captured) StartCoroutine(ProgressTicking());
         captured = true;
-        StartCoroutine(ProgressTicking());
     }
     
     IEnumerator ProgressTicking() {

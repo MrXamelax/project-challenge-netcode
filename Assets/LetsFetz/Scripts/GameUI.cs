@@ -68,7 +68,9 @@ public class GameUI : MonoBehaviour {
         // does this need be rpc'd when team progress thingy?
         var contracts = ContractManager.Instance.GetTeamContracts()[teamManager.GetLocalTeamID()-1];
         for (int i = 0; i < progressTexts.Length; i++) {
-            progressTexts[i].text = $"{contracts[i].GetProgressNeeded() - contracts[i].GetProgressToNextLevel()} / {contracts[i].GetProgressNeeded()}";
+            progressTexts[i].text = $"{contracts[i].GetProgressNeeded() - contracts[i].GetProgressToNextLevel()} "
+                                    + "/"
+                                    + $" {contracts[i].GetProgressNeeded()}";
         }
     }
 

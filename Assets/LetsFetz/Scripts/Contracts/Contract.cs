@@ -14,6 +14,7 @@ public abstract class Contract {
     
     public int AddProgress(int progress) {
         progressToNextLevel -= progress;
+        if (progressToNextLevel < 0) progressToNextLevel = 0;
 
         if (progressToNextLevel <= 0) {
             level += 1;
