@@ -28,11 +28,11 @@ public class Constants {
 
     // Total progression value needed to level up for corresponding level
     public static readonly int[] DATASTATION_PROGRESS_PER_LEVEL
-        = { 50, 70, 100, 120 };
+        = { 50, 50, 50, 50, 70, 100 };
 
     // Points awarded to team by completing the full progress of the corresponding level
     public static readonly int[] DATASTATION_POINTS_PER_LEVEL
-        = { 20, 25, 30, 50 };
+        = { 20, 25, 30, 50, 60, 75, 100, 125, 150 };
 
     #endregion
 
@@ -49,7 +49,7 @@ public class Constants {
 
     // Time needed to pass for a singular progress tick
     public const int GASLEAK_TIME_PER_TICK
-        = 3;
+        = 5;
 
     // Progression value added to contract per tick corresponding to refiner level
     public static readonly int[] GASLEAK_PROGRESS_PER_TICK_BY_LEVEL
@@ -60,11 +60,11 @@ public class Constants {
 
     // Total progression value needed to level up for corresponding level
     public static readonly int[] GASLEAK_PROGRESS_PER_LEVEL
-        = { 100, 250, 500, 600, 800, 1000, 1250, 1500 };
+        = { 500, 650, 900, 1000, 1500, 2000, 3000 };
 
     // Points awarded to team by completing the full progress of the corresponding level
     public static readonly int[] GASLEAK_POINTS_PER_LEVEL
-        = { 5, 10, 15, 20, 25, 35, 45, 50 };
+        = { 5, 10, 10, 20, 20, 30 };
 
     #endregion
 
@@ -106,7 +106,7 @@ public class Constants {
     
     // Points awarded to team by completing the full progress of the corresponding level
     public static readonly int[] ZEAL_POINTS_PER_LEVEL
-        = { 10, 20, 25, 30, 40 };
+        = { 10, 20, 25, 30, 50 };
     
     #endregion
 
