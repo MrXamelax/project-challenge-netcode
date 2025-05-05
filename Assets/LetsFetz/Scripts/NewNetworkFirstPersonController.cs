@@ -81,7 +81,7 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
     private GameObject timer;
     private TMP_Text timerTxt;
 
-    private int _minutesRemaining = 5;
+    private int _minutesRemaining = 20;
     private int _secondsRemaining;
     private int _secondsPassed = 0;
 
