@@ -21,7 +21,7 @@ namespace Contracts {
         }
 
         protected override int AwardPoints() {
-            Debug.Log("Awarding Zeal points!");
+            //Debug.Log("Awarding Zeal points!");
             if (level >= Constants.ZEAL_POINTS_PER_LEVEL.Length) {
                 progressToNextLevel = level >= Constants.ZEAL_PROGRESS_PER_LEVEL.Length-1
                     ? Constants.ZEAL_PROGRESS_PER_LEVEL[^1] // Regex for last element

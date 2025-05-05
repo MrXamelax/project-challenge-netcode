@@ -49,10 +49,6 @@ public class GameUI : MonoBehaviour {
 
         debugText.text = "Team: 0";
     }
-
-    private void Start() {
-        //_minimap.SetActive(false);
-    }
     
     public void UpdateDisplayDatastation(string teamID) {
         datastationText.text = $"Squad {teamID}";
@@ -60,14 +56,9 @@ public class GameUI : MonoBehaviour {
 
     private void InitializeDisplayProgress() {
         var contracts = ContractManager.Instance.GetTeamContracts()[0];
-        //Debug.Log("Size: " + contracts.Count);
         for (int i = 0; i < pointsTexts.Length; i++) {
-            //Debug.Log("InitializeDisplayProgress() " + i);
-            //_progressTexts[i].text = contracts.ToArray()[i].GetPointsPerLevel()[0].ToString();
             pointsTexts[i].text = $"{contracts[i].GetPointsPerLevel()[0].ToString()}";
             progressTexts[i].text = $"0 / {contracts[i].GetProgressToNextLevel()}";
-            //Debug.Log(i + ": " + contracts[i].GetPointsPerLevel().Length);
-            //Debug.Log(i + ": " + contracts[i]);
         }
     }
     

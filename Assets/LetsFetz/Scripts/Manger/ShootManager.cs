@@ -60,7 +60,7 @@ public class ShootManager : MonoBehaviour {
     private void Shoot_started(InputAction.CallbackContext obj) {
         if (!MatchManager.Instance.IsMatchRunning() || isReloading) return;
         if (_ammoCurrent > 0) _shootingCoroutine = StartCoroutine(ShootingCycle());
-        else Debug.Log("No Ammo!");
+        //else Debug.Log("No Ammo!");
     }
     
     private void Shoot_canceled(InputAction.CallbackContext obj) {

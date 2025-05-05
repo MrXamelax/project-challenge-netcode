@@ -13,9 +13,9 @@ using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
 
 public class NewNetworkFirstPersonController : NetworkBehaviour {
-    [SerializeField] private Transform weapon;
-    [SerializeField] private Transform weaponSpawn;
-    [SerializeField] private Transform bulletPrefab;
+    //[SerializeField] private Transform weapon;
+    //[SerializeField] private Transform weaponSpawn;
+    //[SerializeField] private Transform bulletPrefab;
 
     // Player Movement
     private Rigidbody playerRb;
@@ -81,7 +81,7 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
     private GameObject timer;
     private TMP_Text timerTxt;
 
-    private int _minutesRemaining = 3;
+    private int _minutesRemaining = 5;
     private int _secondsRemaining;
     private int _secondsPassed = 0;
 
@@ -92,7 +92,7 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
 
     private Coroutine _cOutOfCombatTimer;
 
-    private GameObject _mainCamera;
+    //private GameObject _mainCamera;
 
     private PlayerRpcs _rpcs;
     // End of Random Property Section
@@ -103,9 +103,9 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
         _rpcs = GetComponent<PlayerRpcs>();
     }
 
-    private void Start() {
-        _mainCamera = GameObject.FindWithTag("MainCamera");
-    }
+    //private void Start() {
+        //_mainCamera = GameObject.FindWithTag("MainCamera");
+    //}
 
     public override void OnNetworkSpawn() {
 
@@ -126,7 +126,7 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
     }
 
     private void Initialize() {
-        Debug.Log($"Player {NetworkManager.Singleton.LocalClientId} joined");
+        //Debug.Log($"Player {NetworkManager.Singleton.LocalClientId} joined");
         
         //TODO: Adjust Time.fixeddeltatime according to application framerate
 
@@ -191,6 +191,7 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
         if (IsOwner) PlayerRotation();
     }
 
+    /*
     private void Update() {
         if (!IsOwner) return;
         if (Input.GetKeyDown(KeyCode.Z)) {
@@ -207,6 +208,7 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
             //Time.fixedDeltaTime = 0.035f;
         }
     }
+    */
 
     private void FixedUpdate() {
         if (!IsOwner) return;
@@ -260,8 +262,9 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
     }
 
     private void GroundedCheck() {
-        Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - GroundedOffset,
-            transform.position.z);
+        var pos = transform.position;
+        Vector3 spherePosition = new Vector3(pos.x, pos.y - GroundedOffset,
+            pos.z);
         _isGrounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers, QueryTriggerInteraction.Ignore);
     }
     
@@ -298,14 +301,14 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
     private bool StartMatch() {
         
         if (GetComponentInParent<TeamManager>().GetNumberOfClientsInTeams() > NetworkManager.Singleton.ConnectedClientsIds.Count) {
-            Debug.Log("Player left the game before start! This is not handled yet!");
+            //Debug.Log("Player left the game before start! This is not handled yet!");
             return false;
         }
 
         // TODO: This is not actually checking if everyone is in a team, can be bypassed by disconnecting and connecting again
         // TODO: Change this when going to big test, is only meant for closely observed testing
         if (GetComponentInParent<TeamManager>().GetNumberOfClientsInTeams() < NetworkManager.Singleton.ConnectedClientsIds.Count) {
-            Debug.Log("Not every player selected a team!");
+            //Debug.Log("Not every player selected a team!");
             return false;
         }
         GetComponent<TeamManager>().OnMatchStarted();
@@ -344,13 +347,13 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
         if (_secondsPassed == Constants.ZEAL_YELLOW_SPAWN_TIMESTAMP) {
             // Host spawns yellow zeal in world
             if (IsHost && IsOwner) SpawnZeal();
-            Debug.Log("Yellow Zeal has spawned!");
+            //Debug.Log("Yellow Zeal has spawned!");
         }
         
         if (_secondsPassed == Constants.ZEAL_RED_SPAWN_TIMESTAMP) {
             // Host spawns read zeal in world
             if (IsHost && IsOwner) SpawnZeal(true);
-            Debug.Log("Red Zeal has spawned!");
+            //Debug.Log("Red Zeal has spawned!");
         }
         
         yield return new WaitForSeconds(1);
@@ -380,7 +383,7 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
     
     #region Zeal
     private void SpawnZeal(bool isRed = false, int randomNumber = -1) {
-        Debug.Log($"SpawnZeal({isRed}, {randomNumber})");
+        //Debug.Log($"SpawnZeal({isRed}, {randomNumber})");
         var prefab = isRed ? zealRedPrefab : zealYellowPrefab;
         
         if (randomNumber == -1) randomNumber = rng.NextInt(zealSpawnPoints.Count);
@@ -390,7 +393,7 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
 
         if (IsHost) {
             SpawnZealClientRpc(isRed, randomNumber, new ClientRpcParams {Send = new ClientRpcSendParams {TargetClientIds = ClientListExcept(OwnerClientId)}});
-            Debug.Log($"Sending SpawnZealClientRpc({isRed}, {randomNumber})");
+            //Debug.Log($"Sending SpawnZealClientRpc({isRed}, {randomNumber})");
         }
         
         var zeal = Instantiate(prefab, spawnpoint.position, Quaternion.identity);
@@ -400,7 +403,7 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
     [ClientRpc]
     private void SpawnZealClientRpc(bool isRed, int randomNumber, ClientRpcParams rpcParams = default) {
         if (IsHost) return;
-        Debug.Log($"Retrieving SpawnZealClientRpc({isRed}, {randomNumber})");
+        //Debug.Log($"Retrieving SpawnZealClientRpc({isRed}, {randomNumber})");
         SpawnZeal(isRed, randomNumber);
     }
     #endregion
@@ -609,10 +612,10 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
         var teamManager = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<TeamManager>();
         if (teamManager.teams[GetComponent<TeamManager>().GetLocalTeamID()-1].Contains(bulletClientID)) return;
 
-        Debug.Log($"Damage! LocalClientId: {NetworkManager.Singleton.LocalClientId}, OwnerClientId: {OwnerClientId}");
+        //Debug.Log($"Damage! LocalClientId: {NetworkManager.Singleton.LocalClientId}, OwnerClientId: {OwnerClientId}");
         
         if (!_vulnerable) {
-            Debug.Log("Respawn protection!");
+            //Debug.Log("Respawn protection!");
             return;
         }
         
@@ -624,7 +627,7 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
             _healthSystem.Damage(Constants.PLAYER_DAMAGE_PER_SHOT);
         }
         DamageServerRpc(OwnerClientId);
-        Debug.Log("I got hit! ID: " + OwnerClientId);
+        //Debug.Log("I got hit! ID: " + OwnerClientId);
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -686,7 +689,7 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
     }
 
     IEnumerator RegenerateHealth(ulong clientID) {
-        Debug.Log("Starting Regen");
+        //Debug.Log("Starting Regen");
         //TODO: start here
         while (!_inCombat && _healthSystem.GetHealth() < Constants.PLAYER_MAX_HEALTH) {
             HealPlayer();
@@ -695,10 +698,9 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
 
         if (_inCombat && IsOwner) {
             GetComponent<PlayerRpcs>().LogEventServerRpc(LoggingManager.LoggingType.StopRegeneration);
-            //LoggingManager.Instance.LogEvent(OwnerClientId, LoggingManager.LoggingType.StopRegeneration);
         }
 
-        Debug.Log("Stopping Regen");
+        //Debug.Log("Stopping Regen");
     }
     
     #endregion

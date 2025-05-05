@@ -30,7 +30,7 @@ public class InteractionTrigger : MonoBehaviour {
 
     private void OnTriggerEnter(Collider other) {
         if (other.CompareTag("Interactable")) {
-            Debug.Log("Interactable detected!");
+            //Debug.Log("Interactable detected!");
             isInteracting = true;
             goInteractable = other.gameObject;
             uiInteract.SetActive(true);
@@ -39,7 +39,7 @@ public class InteractionTrigger : MonoBehaviour {
 
     private void OnTriggerExit(Collider other) {
         if (other.CompareTag("Interactable")) {
-            Debug.Log("Interactable gone!");
+            //Debug.Log("Interactable gone!");
             isInteracting = false;
             goInteractable = null;
             uiInteract.SetActive(false);

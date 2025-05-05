@@ -31,20 +31,13 @@ public class Bullet : MonoBehaviour {
         }
         */
         //print("Destroying Bullet because");
-        Debug.Log($"I did interact with collider of {other.gameObject.name}");
+        //Debug.Log($"I did interact with collider of {other.gameObject.name}");
         Destroy(gameObject);
     }
 
     IEnumerator BulletTimer() {
         yield return new WaitForSeconds(5.0f);
         Destroy(gameObject);
-        //DestroyBulletServerRpc();
-    }
-    
-    [ServerRpc]
-    private void DestroyBulletServerRpc() {
-        GetComponent<NetworkObject>().Despawn();
-        Destroy(this);
     }
     
 }

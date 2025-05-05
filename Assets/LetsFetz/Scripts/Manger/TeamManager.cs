@@ -111,19 +111,19 @@ public class TeamManager : NetworkBehaviour {
         bool swap = false;
         // If same team, button does nothing
         if (teamID == localTeamID) {
-            Debug.Log($"Player {NetworkManager.Singleton.LocalClientId} is already in team {teamID}");
+            //Debug.Log($"Player {NetworkManager.Singleton.LocalClientId} is already in team {teamID}");
             return;
         }
 
         // If team is full, don't let player join
         if (teams[teamID - 1].Count >= 4) {
-            Debug.Log($"Team {teamID} is full!");
+            //Debug.Log($"Team {teamID} is full!");
             return;
         }
 
         // If already in that team, don't let player join
         if (teams[teamID - 1].Contains(NetworkManager.Singleton.LocalClientId)) {
-            Debug.Log($"Player {NetworkManager.Singleton.LocalClientId} is already in team {teamID}");
+            //Debug.Log($"Player {NetworkManager.Singleton.LocalClientId} is already in team {teamID}");
             return;
         }
         
@@ -154,11 +154,9 @@ public class TeamManager : NetworkBehaviour {
         teamManager.UpdateTeams(teamID, OwnerClientId);
 
         if (teamID == teamManager.GetLocalTeamID()) {
-            //TODO: HealthBar color green
             minimapIconPlayer.SetActive(true);
             barSpriteRenderer.color = Color.green;
         } else {
-            //TODO: HealthBar color red
             minimapIconPlayer.SetActive(false);
             barSpriteRenderer.color = Color.red;
         }
@@ -183,11 +181,9 @@ public class TeamManager : NetworkBehaviour {
         teamManager.UpdateTeams(teamID, player);
 
         if (teamID == NetworkManager.Singleton.LocalClient.PlayerObject.gameObject.GetComponent<TeamManager>().GetLocalTeamID()) {
-            //TODO: HealthBar color green
             minimapIconPlayer.SetActive(true);
             barSpriteRenderer.color = Color.green;
         } else {
-            //TODO: HealthBar color red
             minimapIconPlayer.SetActive(false);
             barSpriteRenderer.color = Color.red;
         }
@@ -206,11 +202,9 @@ public class TeamManager : NetworkBehaviour {
     [ClientRpc]
     private void DistributeTeamUpdateClientRpc(int teamID, ClientRpcParams rpcParams = default) {
         if (teamID == localTeamID) {
-            //TODO: HealthBar color green
             minimapIconPlayer.SetActive(true);
             barSpriteRenderer.color = Color.green;
         } else {
-            //TODO: HealthBar color red
             minimapIconPlayer.SetActive(false);
             barSpriteRenderer.color = Color.red;
         }
@@ -276,7 +270,7 @@ public class TeamManager : NetworkBehaviour {
     [ServerRpc]
     private void AddPointsServerRpc(int points, int teamID, ServerRpcParams rpcParams = default) {
         if (!MatchManager.Instance.IsMatchRunning()) return;
-        Debug.Log($"Awarding {points} points to team {teamID+1}!");
+        //Debug.Log($"Awarding {points} points to team {teamID+1}!");
         ScoreboardManager.Instance.UpdateDisplayPoints(points, teamID);
         AddPointsClientRpc(points, teamID, new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = ClientListExcept(rpcParams.Receive.SenderClientId)}});
     }
@@ -302,7 +296,6 @@ public class TeamManager : NetworkBehaviour {
             AddPointsServerRpc(points, teamID-1);
             LoggingManager.LoggingType loggingType;
             // Hard coded but no better solution right now
-            Debug.Log($"contractType: {contractType.ToString()}");
             switch (contractType.ToString()) {
                 case "Contracts.DataStation":
                     loggingType = LoggingManager.LoggingType.PointsDataStation;
@@ -315,7 +308,6 @@ public class TeamManager : NetworkBehaviour {
                     break;
                 default:
                     loggingType = LoggingManager.LoggingType.Error;
-                    Debug.Log("Something went wrong uh-oh!");
                     break;
             }
             LoggingManager.Instance.LogEvent(
@@ -342,28 +334,6 @@ public class TeamManager : NetworkBehaviour {
         GameUI.Instance.UpdateDisplayProgress();
         GameUI.Instance.UpdateDisplayPoints();
     }
-    
-    /*
-    public void AddProgressToContract(int teamID, Contract contract) {
-        AddProgressToContractServerRpc(teamID, contract.GetContractID());
-    }
-    
-    [ServerRpc]
-    private void AddProgressToContractServerRpc(int teamID, int contractID, ServerRpcParams rpcParams = default) {
-        //var contractType = Constants.CONTRACT_MAP[contractID].GetType();
-        //var contract = ContractManager.Instance.GetContractOfType(contractType);
-        //contract.AddProgress(Constants.DATASTATION_PROGRESS_PER_TICK);
-        AddProgressToContractClientRpc(teamID, contractID, new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = ClientListFromTeam(teamID)}} );
-    }
-
-    [ClientRpc]
-    private void AddProgressToContractClientRpc(int teamID, int contractID, ClientRpcParams rpcParams = default) {
-        var contractType = Constants.CONTRACT_MAP[contractID].GetType();
-        var contract = ContractManager.Instance.GetContractOfType(contractType);
-        var points = contract.AddProgress(Constants.DATASTATION_PROGRESS_PER_TICK);
-        //if (points > 0) AddPointsServerRpc(points, teamID);
-    }
-    */
     
     #endregion
     

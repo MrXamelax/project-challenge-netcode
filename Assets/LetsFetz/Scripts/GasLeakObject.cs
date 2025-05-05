@@ -27,7 +27,7 @@ public class GasLeakObject : NetworkBehaviour, IInteractable {
         
         // Refiner is already owned by my team
         if (isRefining && capturedByTeamID == teamManager.GetLocalTeamID()) {
-            Debug.Log("Refiner is already under your control!");
+            //Debug.Log("Refiner is already under your control!");
             return;
         }
         
@@ -71,7 +71,7 @@ public class GasLeakObject : NetworkBehaviour, IInteractable {
         // Initial capture
         if (capturedByTeamID == -1) {
             if (teamID == teamManager.GetLocalTeamID()) {
-                Debug.Log("Initial capture by my team");
+                //Debug.Log("Initial capture by my team");
                 isRefining = true;
                 goLeak.SetActive(false);
                 goRefiner.SetActive(true);
@@ -104,7 +104,7 @@ public class GasLeakObject : NetworkBehaviour, IInteractable {
         while (MatchManager.Instance.IsMatchRunning()) {
             yield return new WaitForSeconds(Constants.GASLEAK_TIME_PER_TICK);
             if (!isRefining) break;
-            Debug.Log($"Adding {Constants.GASLEAK_PROGRESS_PER_TICK_BY_LEVEL[refinerLevel]} Gas Leak progress to team {capturedByTeamID}");
+            //Debug.Log($"Adding {Constants.GASLEAK_PROGRESS_PER_TICK_BY_LEVEL[refinerLevel]} Gas Leak progress to team {capturedByTeamID}");
             teamManager.AddProgressOnServer(capturedByTeamID, new Contracts.GasLeak(),
                 Constants.GASLEAK_PROGRESS_PER_TICK_BY_LEVEL[refinerLevel]);
         }
@@ -112,7 +112,7 @@ public class GasLeakObject : NetworkBehaviour, IInteractable {
 
     IEnumerator ProgressLeveling() {
         yield return new WaitForSeconds(Constants.GASLEAK_TIME_TO_LEVELUP[refinerLevel]);
-        Debug.Log($"Refiner leveled up to level {refinerLevel + 1}!");
+        //Debug.Log($"Refiner leveled up to level {refinerLevel + 1}!");
         if (refinerLevel < Constants.GASLEAK_TIME_TO_LEVELUP.Length - 1) {
             refinerLevel += 1;
             StartCoroutine(ProgressLeveling());

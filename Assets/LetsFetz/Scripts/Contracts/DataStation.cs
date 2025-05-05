@@ -21,7 +21,7 @@ namespace Contracts {
         }
 
         protected override int AwardPoints() {
-            Debug.Log("Awarding Data Station points!");
+            //Debug.Log("Awarding Data Station points!");
             if (level >= Constants.DATASTATION_POINTS_PER_LEVEL.Length) {
                 progressToNextLevel = level >= Constants.DATASTATION_PROGRESS_PER_LEVEL.Length-1
                     ? Constants.DATASTATION_PROGRESS_PER_LEVEL[^1] // Regex for last element

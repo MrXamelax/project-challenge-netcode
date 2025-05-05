@@ -66,7 +66,7 @@ public class ZealObject : MonoBehaviour, IInteractable {
     }
 
     public void ZealState(bool active, int teamID) {
-        if (!active) Debug.Log((_isRed ? "Red " : "Yellow ") + $"Zeal has been collected by Team {teamID}");
+        //if (!active) Debug.Log((_isRed ? "Red " : "Yellow ") + $"Zeal has been collected by Team {teamID}");
         capturedByTeamID = teamID;
         
         var childObjects = GetComponentsInChildren<Transform>(true).ToList();
@@ -81,10 +81,10 @@ public class ZealObject : MonoBehaviour, IInteractable {
             yield return new WaitForSeconds(Constants.ZEAL_TIME_PER_TICK);
             if (capturedByTeamID == -1) break;
             var progress = _isRed ? Constants.ZEAL_RED_PROGRESS_PER_TICK : Constants.ZEAL_YELLOW_PROGRESS_PER_TICK;
-            Debug.Log($"Adding {progress} Zeal progress to team {capturedByTeamID}!");
+            //Debug.Log($"Adding {progress} Zeal progress to team {capturedByTeamID}!");
             teamManager.AddProgressOnServer(capturedByTeamID, new Contracts.Zeal(), progress);
         }
-        Debug.Log("Zeal dropped");
+        //Debug.Log("Zeal dropped");
     }
 
 }

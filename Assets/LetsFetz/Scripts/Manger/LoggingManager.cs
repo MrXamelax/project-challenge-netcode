@@ -50,11 +50,11 @@ public class LoggingManager : MonoBehaviour {
     public void ToggleLogging(bool start) {
         if (start) {
             Initialize();
-            Debug.Log("Start Logging");
+            //Debug.Log("Start Logging");
             _timeStart = Time.time;
             _cLoggingCycle = StartCoroutine(LoggingCycle());
         } else {
-            Debug.Log("Stop Logging");
+            //Debug.Log("Stop Logging");
             StopCoroutine(_cLoggingCycle);
             ExportData();
         }

@@ -43,8 +43,6 @@ public class DataStationObject : MonoBehaviour {
         var teamID = other.GetComponent<TeamManager>().GetLocalTeamID()-1;
         activePlayersFromTeams[teamID] += 1;
         
-        //_lastClientFromTeam[teamID] = other.GetComponent<NetworkObject>().OwnerClientId;
-        
         _clientsFromTeams[teamID].Add(other.GetComponent<NetworkObject>().OwnerClientId);
         
         CheckCapture(true);
@@ -69,44 +67,33 @@ public class DataStationObject : MonoBehaviour {
             if (activePlayersFromTeams[i] > majority) {
                 majority = activePlayersFromTeams[i];
                 winningTeamID = i+1;
-                //cCaptureDataStation = StartCoroutine(CaptureDataStation(i+1));
-                //capturedByTeamID = i+1;
-                //captured = true;
-                //StartCoroutine(ProgressTicking());
             }
             // Tied
             else if (activePlayersFromTeams[i] == majority) {
                 winningTeamID = -1;
-                //StopCoroutine(cCaptureDataStation);
-                //Debug.Log("Capturing stopped!");
-                //capturedByTeamID = -1;
-                //captured = false;
-                //StopCoroutine(ProgressTicking());
             }
         }
 
         if (winningTeamID > 0) {
             if (winningTeamID == capturedByTeamID) {
-                Debug.Log("Your team already owns the data station!");
+                //Debug.Log("Your team already owns the data station!");
                 return;
             }
             cCaptureDataStation = StartCoroutine(CaptureDataStation(winningTeamID));
         } else {
             StopCoroutine(cCaptureDataStation);
-            Debug.Log("Capturing stopped!");
+            //Debug.Log("Capturing stopped!");
         }
 
-        // DEBUG
-        //if (capturedByTeamID > 0) Debug.Log($"Captured by team {capturedByTeamID}!");
-        //else Debug.Log($"Captured by no team or tied!");
-        if (winningTeamID == -1) Debug.Log($"No team or tied!");
+        
+        //if (winningTeamID == -1) Debug.Log($"No team or tied!");
         
     }
     
     IEnumerator CaptureDataStation(int teamID) {
-        Debug.Log("Capturing started!");
+        //Debug.Log("Capturing started!");
         yield return new WaitForSeconds(Constants.DATASTATION_CAPTURE_TIME);
-        Debug.Log($"Team {teamID} captured!");
+        //Debug.Log($"Team {teamID} captured!");
         capturedByTeamID = teamID;
         _rpcs.CaptureDataStationServerRpc(capturedByTeamID.ToString());
         LoggingManager.Instance.LogEvent(
@@ -120,14 +107,8 @@ public class DataStationObject : MonoBehaviour {
         while (MatchManager.Instance.IsMatchRunning()) {
             yield return new WaitForSeconds(Constants.DATASTATION_TIME_PER_TICK);
             if (!captured) break;
-            Debug.Log($"Adding {Constants.DATASTATION_PROGRESS_PER_TICK} Data Station progress to team {capturedByTeamID}");
-            //teamManager.AddProgressToContract(capturedByTeamID, new Contracts.DataStation());
+            //Debug.Log($"Adding {Constants.DATASTATION_PROGRESS_PER_TICK} Data Station progress to team {capturedByTeamID}");
             teamManager.AddProgressOnServer(capturedByTeamID, new Contracts.DataStation(), Constants.DATASTATION_PROGRESS_PER_TICK);
-            
-            //var teamManager = NetworkManager.Singleton.LocalClient.PlayerObject.gameObject.GetComponent<TeamManager>();
-            
-            //ContractManager.Instance.GetContractList().Find(x =>
-            //x is Contracts.DataStation).AddProgress(Constants.DATASTATION_PROGRESS_PER_TICK);
         }
     }
     
