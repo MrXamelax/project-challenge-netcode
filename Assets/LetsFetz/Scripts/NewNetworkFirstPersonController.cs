@@ -681,7 +681,7 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
     IEnumerator OutOfCombatTimer(ulong clientID = 0) {
         yield return new WaitForSeconds(Constants.PLAYER_TIME_OUT_OF_COMBAT);
         _inCombat = false;
-        StartCoroutine(RegenerateHealth(clientID));
+        if (IsOwner) StartCoroutine(RegenerateHealth(clientID));
     }
 
     public int GetHealth() {

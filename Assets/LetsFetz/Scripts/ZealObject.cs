@@ -21,6 +21,7 @@ public class ZealObject : MonoBehaviour, IInteractable {
 
     private void Start() {
         teamManager = NetworkManager.Singleton.LocalClient.PlayerObject.gameObject.GetComponent<TeamManager>();
+        if (NetworkManager.Singleton.IsHost) StartCoroutine(ProgressTicking());
     }
 
     public void Interact() {
@@ -32,8 +33,8 @@ public class ZealObject : MonoBehaviour, IInteractable {
     }
 
     private void PickUpZeal() {
-        ZealState(false, teamManager.GetLocalTeamID());
-        if (NetworkManager.Singleton.IsHost) StartCoroutine(ProgressTicking());
+        ZealState(false, teamManager.GetLocalTeamID(), true);
+        //if (NetworkManager.Singleton.IsHost) StartCoroutine(ProgressTicking());
         _rpcs.PickUpZealServerRpc(_isRed, teamManager.GetLocalTeamID());
         /*
          * + deactivate gameobject for everyone
@@ -65,9 +66,11 @@ public class ZealObject : MonoBehaviour, IInteractable {
         zeal.GetComponent<ZealObject>().DropZeal();
     }
 
-    public void ZealState(bool active, int teamID) {
+    public void ZealState(bool active, int teamID, bool localCall = false) {
         //if (!active) Debug.Log((_isRed ? "Red " : "Yellow ") + $"Zeal has been collected by Team {teamID}");
         capturedByTeamID = teamID;
+
+        if (localCall && !active) GameObject.FindWithTag("MainCamera").GetComponentInChildren<InteractionTrigger>().SetIsInteracting(false);
         
         var childObjects = GetComponentsInChildren<Transform>(true).ToList();
         childObjects.RemoveAt(0);
@@ -79,7 +82,7 @@ public class ZealObject : MonoBehaviour, IInteractable {
     public IEnumerator ProgressTicking() {
         while (MatchManager.Instance.IsMatchRunning()) {
             yield return new WaitForSeconds(Constants.ZEAL_TIME_PER_TICK);
-            if (capturedByTeamID == -1) break;
+            if (capturedByTeamID == -1) continue;
             var progress = _isRed ? Constants.ZEAL_RED_PROGRESS_PER_TICK : Constants.ZEAL_YELLOW_PROGRESS_PER_TICK;
             //Debug.Log($"Adding {progress} Zeal progress to team {capturedByTeamID}!");
             teamManager.AddProgressOnServer(capturedByTeamID, new Contracts.Zeal(), progress);

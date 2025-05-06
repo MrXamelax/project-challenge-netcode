@@ -78,9 +78,9 @@ public class PlayerRpcs : NetworkBehaviour {
         var zealObject = zeal.GetComponent<ZealObject>();
         zealObject.ZealState(false, teamID);
 
-        if (!IsHost) return;
+        //if (!IsHost) return;
         // Start ticking zeal progress
-        StartCoroutine(zealObject.ProgressTicking());
+        //StartCoroutine(zealObject.ProgressTicking());
     }
 
     [ServerRpc]

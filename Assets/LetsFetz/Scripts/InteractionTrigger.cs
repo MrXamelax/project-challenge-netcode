@@ -12,7 +12,7 @@ public class InteractionTrigger : MonoBehaviour {
 
     private NewPlayerInputActions _playerInputActions;
     
-    private bool isInteracting = false;
+    private bool _isInteracting = false;
     private GameObject goInteractable;
     
     private void Start() {
@@ -20,9 +20,13 @@ public class InteractionTrigger : MonoBehaviour {
         _playerInputActions.Player.Enable();
         _playerInputActions.Player.Interact.performed += Interact_performed;
     }
+    
+    public void SetIsInteracting(bool isInteracting) {
+        _isInteracting = isInteracting;
+    }
 
     private void Interact_performed(InputAction.CallbackContext obj) {
-        if (isInteracting && goInteractable != null) {
+        if (_isInteracting && goInteractable != null) {
             goInteractable.GetComponentInParent<IInteractable>().Interact();
         }
         uiInteract.SetActive(false);
@@ -31,7 +35,7 @@ public class InteractionTrigger : MonoBehaviour {
     private void OnTriggerEnter(Collider other) {
         if (other.CompareTag("Interactable")) {
             //Debug.Log("Interactable detected!");
-            isInteracting = true;
+            _isInteracting = true;
             goInteractable = other.gameObject;
             uiInteract.SetActive(true);
         }
@@ -39,8 +43,8 @@ public class InteractionTrigger : MonoBehaviour {
 
     private void OnTriggerExit(Collider other) {
         if (other.CompareTag("Interactable")) {
-            //Debug.Log("Interactable gone!");
-            isInteracting = false;
+            Debug.Log("Interactable gone!");
+            _isInteracting = false;
             goInteractable = null;
             uiInteract.SetActive(false);
         }

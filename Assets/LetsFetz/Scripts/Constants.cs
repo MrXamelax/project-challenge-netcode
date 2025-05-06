@@ -28,11 +28,11 @@ public class Constants {
 
     // Total progression value needed to level up for corresponding level
     public static readonly int[] DATASTATION_PROGRESS_PER_LEVEL
-        = { 50, 50, 50, 50, 70, 100 };
+        = { 50, 50, 50, 70, 100 };
 
     // Points awarded to team by completing the full progress of the corresponding level
     public static readonly int[] DATASTATION_POINTS_PER_LEVEL
-        = { 20, 25, 30, 50, 60, 75, 100, 125, 150 };
+        = { 20, 25, 30, 50, 60, 75 };
 
     #endregion
 
