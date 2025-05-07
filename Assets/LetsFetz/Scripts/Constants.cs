@@ -49,7 +49,7 @@ public class Constants {
 
     // Time needed to pass for a singular progress tick
     public const int GASLEAK_TIME_PER_TICK
-        = 10;
+        = 8;
 
     // Progression value added to contract per tick corresponding to refiner level
     public static readonly int[] GASLEAK_PROGRESS_PER_TICK_BY_LEVEL
@@ -61,11 +61,11 @@ public class Constants {
 
     // Total progression value needed to level up for corresponding level
     public static readonly int[] GASLEAK_PROGRESS_PER_LEVEL
-        = { 500, 650, 900, 1000, 1500, 2000, 5000 };
+        = { 500, 650, 900, 1000, 1500, 2000, 3500 };
 
     // Points awarded to team by completing the full progress of the corresponding level
     public static readonly int[] GASLEAK_POINTS_PER_LEVEL
-        = { 5, 10, 10, 20, 20, 30 };
+        = { 5, 10, 10, 20, 30 };
 
     #endregion
 
