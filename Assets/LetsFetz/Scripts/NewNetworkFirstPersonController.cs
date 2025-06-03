@@ -626,6 +626,7 @@ public class NewNetworkFirstPersonController : NetworkBehaviour {
             _cOutOfCombatTimer = StartCoroutine(OutOfCombatTimer());
             _healthSystem.Damage(Constants.PLAYER_DAMAGE_PER_SHOT);
         }
+        GameUI.Instance.PopHitmarker();
         DamageServerRpc(OwnerClientId);
         //Debug.Log("I got hit! ID: " + OwnerClientId);
     }

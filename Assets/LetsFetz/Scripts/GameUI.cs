@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
@@ -29,11 +30,16 @@ public class GameUI : MonoBehaviour {
 
     [SerializeField] private TMP_Text datastationText;
 
+    [SerializeField] private GameObject hitmarker;
+    [SerializeField] private float hitmarkerDuration;
+
     [SerializeField] private GameObject endScreen;
     
     private NewPlayerInputActions _playerInputActions;
 
     private TeamManager teamManager;
+    
+    private bool _hitmarkerActive = false;
     
     private void Awake() {
         
@@ -134,6 +140,20 @@ public class GameUI : MonoBehaviour {
         scoreboard.SetActive(false);
         minimap.SetActive(true);
         progressPanel.SetActive(true);
+    }
+
+    // Shows the hitmarker for a short duration to indicate an enemy has been hit
+    public void PopHitmarker() {
+        if (_hitmarkerActive) return;
+        StartCoroutine(HitmarkerDuration());
+    }
+
+    private IEnumerator HitmarkerDuration() {
+        _hitmarkerActive = true;
+        hitmarker.SetActive(true);
+        yield return new WaitForSeconds(hitmarkerDuration);
+        hitmarker.SetActive(false);
+        _hitmarkerActive = false;
     }
 
     // We don't want to allow picking a team while the match is already running
