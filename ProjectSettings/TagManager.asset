@@ -3,7 +3,18 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - CinemachineTarget
+  - VirtualCamera
+  - Bullet
+  - StartMatch
+  - Timer
+  - Scoreboard
+  - Passable
+  - Interactable
+  - GasLeak
+  - ZealYellow
+  - ZealRed
   layers:
   - Default
   - TransparentFX
@@ -12,11 +23,11 @@ TagManager:
   - Water
   - UI
   - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - PlayerShit
+  - Unjumpable
+  - Minimap
+  - POV
+  - Hide
   - 
   - 
   - 
